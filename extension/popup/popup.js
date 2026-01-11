@@ -19,8 +19,18 @@ const copyBtn = document.getElementById("copy-btn");
 const connectionStatus = document.getElementById("connection-status");
 const quickActions = document.getElementById("quick-actions");
 
+// Default Settings
+const DEFAULT_SETTINGS = {
+  apiBaseUrl: "https://fountain-ai-bot.vercel.app",
+  strictModeDefault: true,
+  autoClearInput: true,
+  showCitationsDefault: true,
+  topK: 5,
+  theme: "light"
+};
+
 // State
-let apiUrl = "https://fountain-ai-bot.vercel.app";
+let settings = { ...DEFAULT_SETTINGS };
 let isLoading = false;
 let currentAnswer = "";
 let recentQuestions = [];
@@ -51,6 +61,7 @@ const QUICK_QUESTIONS = [
 // Initialize
 document.addEventListener("DOMContentLoaded", async () => {
   await loadSettings();
+  applySettings();
   await checkConnection();
   loadRecentQuestions();
   setupEventListeners();
@@ -59,12 +70,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function loadSettings() {
   try {
-    const result = await chrome.storage.sync.get(["apiUrl"]);
-    if (result.apiUrl) {
-      apiUrl = result.apiUrl;
-    }
+    const result = await chrome.storage.sync.get(Object.keys(DEFAULT_SETTINGS));
+    settings = { ...DEFAULT_SETTINGS, ...result };
   } catch (e) {
     console.error("Failed to load settings:", e);
+    settings = { ...DEFAULT_SETTINGS };
+  }
+}
+
+function applySettings() {
+  // Apply theme
+  document.body.setAttribute("data-theme", settings.theme);
+  
+  // Apply strict mode default
+  if (strictModeToggle) {
+    strictModeToggle.checked = settings.strictModeDefault;
   }
 }
 
@@ -83,20 +103,21 @@ async function checkConnection() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000);
     
-    const response = await fetch(`${apiUrl}/api/sources`, {
+    const response = await fetch(`${settings.apiBaseUrl}/api/sources`, {
       method: "GET",
       signal: controller.signal,
     });
     clearTimeout(timeoutId);
 
     if (response.ok) {
+      const data = await response.json();
       connectionStatus.innerHTML = `
         <div class="connection-success">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
             <polyline points="22 4 12 14.01 9 11.01"/>
           </svg>
-          <span>Connected to ${new URL(apiUrl).hostname}</span>
+          <span>Connected (${data.chunkCount || 0} chunks)</span>
         </div>
       `;
       setTimeout(() => connectionStatus.classList.add("hidden"), 3000);
@@ -202,6 +223,12 @@ function setupEventListeners() {
   // Settings button
   settingsBtn.addEventListener("click", openSettings);
 
+  // Footer settings link
+  const openSettingsFooter = document.getElementById("open-settings");
+  if (openSettingsFooter) {
+    openSettingsFooter.addEventListener("click", openSettings);
+  }
+
   // Copy button
   copyBtn.addEventListener("click", handleCopy);
 
@@ -210,6 +237,13 @@ function setupEventListeners() {
     const item = e.target.closest(".citation-item");
     if (item) {
       item.classList.toggle("expanded");
+    }
+  });
+
+  // Listen for settings changes
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === "sync") {
+      loadSettings().then(() => applySettings());
     }
   });
 }
@@ -267,13 +301,13 @@ async function handleAsk() {
   hideAnswer();
 
   try {
-    const response = await fetch(`${apiUrl}/api/ask`, {
+    const response = await fetch(`${settings.apiBaseUrl}/api/ask`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         question,
         strict: strictModeToggle.checked,
-        topK: 5,
+        topK: settings.topK,
       }),
     });
 
@@ -316,13 +350,16 @@ async function handleAsk() {
       showAnswer(fullContent);
     }
 
-    if (citations.length > 0) {
+    // Show or hide citations based on settings
+    if (citations.length > 0 && settings.showCitationsDefault) {
       showCitations(citations);
     }
 
-    // Clear input after successful response
-    questionInput.value = "";
-    updateAskButton();
+    // Clear input if auto-clear is enabled
+    if (settings.autoClearInput) {
+      questionInput.value = "";
+      updateAskButton();
+    }
 
   } catch (error) {
     showError(error.message);
