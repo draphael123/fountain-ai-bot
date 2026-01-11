@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { config } from "@/lib/config";
 import { hasData, getChunkCount, getMetadata } from "@/lib/db/static-store";
-import OpenAI from "openai";
 
 export const runtime = "nodejs";
 
@@ -11,16 +10,58 @@ export async function GET() {
   const chunkCount = getChunkCount();
   const metadata = getMetadata();
 
-  // Try a simple OpenAI call to test connectivity
+  // Try a direct fetch to OpenAI to test connectivity
   let openaiTest = "not tested";
+  let fetchTest = "not tested";
+  
   try {
     if (config.openaiApiKey) {
-      const openai = new OpenAI({ apiKey: config.openaiApiKey });
-      const models = await openai.models.list();
-      openaiTest = `success - ${models.data.length} models available`;
+      // Direct fetch test
+      const response = await fetch("https://api.openai.com/v1/models", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${config.openaiApiKey}`,
+          "Content-Type": "application/json",
+        },
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        fetchTest = `success - ${data.data?.length || 0} models`;
+      } else {
+        const errorText = await response.text();
+        fetchTest = `HTTP ${response.status}: ${errorText.slice(0, 200)}`;
+      }
     }
   } catch (e) {
-    openaiTest = `error: ${e instanceof Error ? e.message : String(e)}`;
+    fetchTest = `fetch error: ${e instanceof Error ? e.message : String(e)}`;
+  }
+
+  // Try a simple embedding call
+  let embeddingTest = "not tested";
+  try {
+    if (config.openaiApiKey) {
+      const response = await fetch("https://api.openai.com/v1/embeddings", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${config.openaiApiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "text-embedding-3-small",
+          input: "test",
+        }),
+      });
+      
+      if (response.ok) {
+        embeddingTest = "success";
+      } else {
+        const errorText = await response.text();
+        embeddingTest = `HTTP ${response.status}: ${errorText.slice(0, 200)}`;
+      }
+    }
+  } catch (e) {
+    embeddingTest = `error: ${e instanceof Error ? e.message : String(e)}`;
   }
 
   return NextResponse.json({
@@ -35,10 +76,7 @@ export async function GET() {
       chunkCount,
       documentName: metadata?.document_name || null,
     },
-    openaiTest,
-    envCheck: {
-      OPENAI_API_KEY: process.env.OPENAI_API_KEY ? `set (${process.env.OPENAI_API_KEY.length} chars)` : "NOT SET",
-    }
+    fetchTest,
+    embeddingTest,
   });
 }
-
