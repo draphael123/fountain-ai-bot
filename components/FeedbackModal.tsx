@@ -171,7 +171,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                 className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
               <p className="text-xs text-muted-foreground mt-1">
-                If you'd like us to follow up with you
+                If you would like us to follow up with you
               </p>
             </div>
 
