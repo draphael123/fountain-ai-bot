@@ -18,6 +18,7 @@ export interface StoredChunk {
 export interface StoredMetadata {
   document_name: string;
   document_path: string;
+  google_doc_url?: string;
   section_count: number;
   chunk_count: number;
   total_tokens: number;

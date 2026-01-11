@@ -73,6 +73,7 @@ export async function ingestDocument(
       metadata: {
         document_name: path.basename(docPath),
         document_path: docPath,
+        google_doc_url: config.googleDocUrl || undefined,
         section_count: mergedSections.length,
         chunk_count: chunks.length,
         total_tokens: totalTokens,

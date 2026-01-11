@@ -71,12 +71,31 @@ export default function ChatPage() {
   const [phiWarning, setPHIWarning] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
   const [recentQuestions, setRecentQuestions] = useState<string[]>([]);
+  const [googleDocUrl, setGoogleDocUrl] = useState<string | null>(null);
   const [escalation, setEscalation] = useState<{show: boolean; categories: string[]; message: string}>({
     show: false, categories: [], message: ""
   });
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Fetch sources info including Google Doc URL
+  useEffect(() => {
+    const fetchSources = async () => {
+      try {
+        const response = await fetch("/api/sources");
+        if (response.ok) {
+          const data = await response.json();
+          if (data.googleDocUrl) {
+            setGoogleDocUrl(data.googleDocUrl);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to fetch sources:", e);
+      }
+    };
+    fetchSources();
+  }, []);
 
   // Load messages from localStorage
   useEffect(() => {
@@ -509,6 +528,7 @@ export default function ChatPage() {
                             fullContent={message.retrieved?.find((r) => r.id === citation.id)?.content}
                             score={citation.score}
                             sourcePath={citation.sourcePath}
+                            googleDocUrl={googleDocUrl || undefined}
                           />
                         ))}
                       </div>

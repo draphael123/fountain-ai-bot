@@ -14,6 +14,8 @@ export const config = {
   
   // Document
   documentPath: process.env.DOCUMENT_PATH || "./Fountain Workflows (Updated 1_2) (1).docx",
+  // Google Doc URL for citations - users can set this to link citations to the source
+  googleDocUrl: process.env.GOOGLE_DOC_URL || "",
   
   // Dev mode
   devMode: process.env.DEV_MODE === "true",

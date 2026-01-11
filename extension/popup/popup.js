@@ -34,6 +34,7 @@ let settings = { ...DEFAULT_SETTINGS };
 let isLoading = false;
 let currentAnswer = "";
 let recentQuestions = [];
+let googleDocUrl = null;
 
 // PHI Detection patterns
 const PHI_PATTERNS = [
@@ -111,6 +112,10 @@ async function checkConnection() {
 
     if (response.ok) {
       const data = await response.json();
+      // Store the Google Doc URL for citations
+      if (data.googleDocUrl) {
+        googleDocUrl = data.googleDocUrl;
+      }
       connectionStatus.innerHTML = `
         <div class="connection-success">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -402,6 +407,16 @@ function showCitations(citations) {
   
   citationsList.innerHTML = citations.map((c, i) => {
     const scoreClass = c.score > 0.8 ? "score-high" : c.score > 0.6 ? "score-medium" : "score-low";
+    const docLink = googleDocUrl ? `
+      <a href="${googleDocUrl}" target="_blank" rel="noopener noreferrer" class="citation-doc-link" onclick="event.stopPropagation()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+          <polyline points="15 3 21 3 21 9"/>
+          <line x1="10" x2="21" y1="14" y2="3"/>
+        </svg>
+        View Source
+      </a>
+    ` : '';
     return `
       <div class="citation-item">
         <div class="citation-header">
@@ -410,6 +425,7 @@ function showCitations(citations) {
           <span class="citation-score ${scoreClass}">${Math.round(c.score * 100)}%</span>
         </div>
         <p class="citation-excerpt">${escapeHtml(c.excerpt)}</p>
+        ${docLink}
       </div>
     `;
   }).join("");
