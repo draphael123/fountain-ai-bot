@@ -1,53 +1,63 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, FileText, Shield, MessageSquare, AlertTriangle } from "lucide-react";
+import { ArrowRight, FileText, Shield, MessageSquare, AlertTriangle, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
+    <main className="min-h-screen bg-gradient-to-b from-background to-muted/50">
+      {/* Header */}
+      <header className="absolute top-0 right-0 p-4 z-10">
+        <ThemeToggle />
+      </header>
+
       {/* Hero Section */}
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100 via-transparent to-transparent opacity-50" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent opacity-50" />
         
         <div className="relative max-w-5xl mx-auto px-6 pt-16 pb-16">
           <div className="text-center space-y-6">
             {/* Logo */}
-            <div className="flex justify-center mb-4">
+            <div className="flex justify-center mb-4 animate-fade-in-up">
               <Image 
                 src="/logo.png" 
                 alt="Fountain Workflows Logo" 
                 width={120} 
                 height={120}
-                className="rounded-2xl shadow-lg"
+                className="rounded-2xl shadow-lg hover:scale-105 transition-transform duration-300"
               />
             </div>
 
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-100 rounded-full text-blue-700 text-sm font-medium">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full text-primary text-sm font-medium animate-fade-in" style={{ animationDelay: "0.1s" }}>
               <Shield className="h-4 w-4" />
               Internal Operations Tool
             </div>
             
-            <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
               Fountain Workflows
-              <span className="block text-blue-600">Assistant</span>
+              <span className="block gradient-text">Assistant</span>
             </h1>
             
-            <p className="max-w-2xl mx-auto text-lg text-slate-600 leading-relaxed">
+            <p className="max-w-2xl mx-auto text-lg text-muted-foreground leading-relaxed animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
               Get instant, accurate answers about internal workflows and procedures.
               All responses are grounded in official documentation with full citations.
             </p>
 
-            <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+            <div className="flex flex-wrap items-center justify-center gap-4 pt-4 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
               <Link href="/chat">
-                <Button size="lg" className="gap-2">
+                <Button size="lg" className="gap-2 btn-hover-lift">
+                  <Sparkles className="h-4 w-4" />
                   Start Asking Questions
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
               <Link href="/sources">
-                <Button variant="outline" size="lg">
+                <Button variant="outline" size="lg" className="gap-2">
+                  <FileText className="h-4 w-4" />
                   View Document Sources
                 </Button>
               </Link>
@@ -57,13 +67,13 @@ export default function HomePage() {
       </div>
 
       {/* Warning Banner */}
-      <div className="max-w-4xl mx-auto px-6 -mt-4">
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+      <div className="max-w-4xl mx-auto px-6 -mt-4 animate-fade-in" style={{ animationDelay: "0.5s" }}>
+        <div className="bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
           <div className="flex items-start gap-3">
-            <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-500 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="font-medium text-amber-800">Internal Use Only</p>
-              <p className="text-sm text-amber-700 mt-1">
+              <p className="font-medium text-amber-800 dark:text-amber-200">Internal Use Only</p>
+              <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
                 This tool is for internal operations staff only. Do not share externally.
                 Do not enter any Protected Health Information (PHI) or patient data.
               </p>
@@ -75,12 +85,12 @@ export default function HomePage() {
       {/* Features */}
       <div className="max-w-5xl mx-auto px-6 py-16">
         <div className="grid md:grid-cols-3 gap-6">
-          <Card className="border-slate-200">
+          <Card className="border-border bg-card hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
             <CardHeader>
-              <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center mb-2">
-                <FileText className="h-5 w-5 text-blue-600" />
+              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center mb-2">
+                <FileText className="h-5 w-5 text-primary" />
               </div>
-              <CardTitle className="text-lg">Document-Grounded</CardTitle>
+              <CardTitle className="text-lg text-foreground">Document-Grounded</CardTitle>
               <CardDescription>
                 Every answer comes directly from official workflow documentation.
                 No hallucinations or made-up information.
@@ -88,12 +98,12 @@ export default function HomePage() {
             </CardHeader>
           </Card>
 
-          <Card className="border-slate-200">
+          <Card className="border-border bg-card hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-fade-in-up" style={{ animationDelay: "0.7s" }}>
             <CardHeader>
-              <div className="h-10 w-10 rounded-lg bg-green-100 flex items-center justify-center mb-2">
-                <MessageSquare className="h-5 w-5 text-green-600" />
+              <div className="h-10 w-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-2">
+                <MessageSquare className="h-5 w-5 text-green-600 dark:text-green-400" />
               </div>
-              <CardTitle className="text-lg">Full Citations</CardTitle>
+              <CardTitle className="text-lg text-foreground">Full Citations</CardTitle>
               <CardDescription>
                 See exactly which section each piece of information comes from.
                 Click to view the original text.
@@ -101,12 +111,12 @@ export default function HomePage() {
             </CardHeader>
           </Card>
 
-          <Card className="border-slate-200">
+          <Card className="border-border bg-card hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-fade-in-up" style={{ animationDelay: "0.8s" }}>
             <CardHeader>
-              <div className="h-10 w-10 rounded-lg bg-purple-100 flex items-center justify-center mb-2">
-                <Shield className="h-5 w-5 text-purple-600" />
+              <div className="h-10 w-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-2">
+                <Shield className="h-5 w-5 text-purple-600 dark:text-purple-400" />
               </div>
-              <CardTitle className="text-lg">Strict Mode</CardTitle>
+              <CardTitle className="text-lg text-foreground">Strict Mode</CardTitle>
               <CardDescription>
                 Enforces answers only from the document. 
                 If it&apos;s not in the doc, it says so clearly.
@@ -118,51 +128,35 @@ export default function HomePage() {
 
       {/* How It Works */}
       <div className="max-w-4xl mx-auto px-6 pb-20">
-        <h2 className="text-2xl font-bold text-slate-900 text-center mb-8">
+        <h2 className="text-2xl font-bold text-foreground text-center mb-8 animate-fade-in">
           How It Works
         </h2>
         
         <div className="space-y-4">
-          <div className="flex items-start gap-4 p-4 bg-white rounded-lg border border-slate-200">
-            <div className="h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold text-sm flex-shrink-0">
-              1
+          {[
+            { num: 1, title: "Ask your question", desc: "Type any question about workflows, procedures, or policies." },
+            { num: 2, title: "System finds relevant sections", desc: "The most relevant parts of the documentation are retrieved using semantic search." },
+            { num: 3, title: "Get a grounded answer", desc: "Receive a clear answer with numbered citations linking to source sections." },
+          ].map((step, i) => (
+            <div 
+              key={step.num} 
+              className="flex items-start gap-4 p-4 bg-card rounded-lg border border-border hover:shadow-md transition-all duration-300 animate-fade-in-up"
+              style={{ animationDelay: `${0.9 + i * 0.1}s` }}
+            >
+              <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold text-sm flex-shrink-0">
+                {step.num}
+              </div>
+              <div>
+                <p className="font-medium text-foreground">{step.title}</p>
+                <p className="text-sm text-muted-foreground mt-1">{step.desc}</p>
+              </div>
             </div>
-            <div>
-              <p className="font-medium text-slate-900">Ask your question</p>
-              <p className="text-sm text-slate-600 mt-1">
-                Type any question about workflows, procedures, or policies.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-4 p-4 bg-white rounded-lg border border-slate-200">
-            <div className="h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold text-sm flex-shrink-0">
-              2
-            </div>
-            <div>
-              <p className="font-medium text-slate-900">System finds relevant sections</p>
-              <p className="text-sm text-slate-600 mt-1">
-                The most relevant parts of the documentation are retrieved using semantic search.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-4 p-4 bg-white rounded-lg border border-slate-200">
-            <div className="h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold text-sm flex-shrink-0">
-              3
-            </div>
-            <div>
-              <p className="font-medium text-slate-900">Get a grounded answer</p>
-              <p className="text-sm text-slate-600 mt-1">
-                Receive a clear answer with numbered citations linking to source sections.
-              </p>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 bg-white">
+      <footer className="border-t border-border bg-card">
         <div className="max-w-5xl mx-auto px-6 py-6">
           <div className="flex items-center justify-center gap-3 mb-2">
             <Image 
@@ -172,9 +166,9 @@ export default function HomePage() {
               height={24}
               className="rounded"
             />
-            <span className="font-medium text-slate-700">Fountain Workflows Assistant</span>
+            <span className="font-medium text-foreground">Fountain Workflows Assistant</span>
           </div>
-          <p className="text-center text-sm text-slate-500">
+          <p className="text-center text-sm text-muted-foreground">
             Internal Use Only &bull; Do Not Share Externally
           </p>
         </div>

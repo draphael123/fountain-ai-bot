@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { PHIWarningBanner } from "@/components/PHIWarningBanner";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -24,14 +25,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased min-h-screen`}
       >
-        <PHIWarningBanner />
-        {children}
+        <ThemeProvider>
+          <PHIWarningBanner />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
 }
-

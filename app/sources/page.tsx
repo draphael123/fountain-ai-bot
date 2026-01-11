@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, FileText, RefreshCw, Loader2, CheckCircle, XCircle, Database } from "lucide-react";
+import { ArrowLeft, FileText, RefreshCw, Loader2, CheckCircle, XCircle, Database, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 interface SourcesData {
   ingested: boolean;
@@ -73,9 +74,9 @@ export default function SourcesPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200">
+      <header className="bg-card border-b border-border">
         <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -86,20 +87,24 @@ export default function SourcesPage() {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-lg font-semibold text-slate-900">
+                <h1 className="text-lg font-semibold text-foreground">
                   Document Sources
                 </h1>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-muted-foreground">
                   View ingested document information
                 </p>
               </div>
             </div>
 
-            <Link href="/chat">
-              <Button size="sm" className="gap-2">
-                Go to Chat
-              </Button>
-            </Link>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <Link href="/chat">
+                <Button size="sm" className="gap-2">
+                  <MessageSquare className="h-4 w-4" />
+                  Go to Chat
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -107,12 +112,12 @@ export default function SourcesPage() {
       <div className="max-w-4xl mx-auto px-6 py-8 space-y-6">
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
           </div>
         ) : error ? (
-          <Card className="border-red-200 bg-red-50">
+          <Card className="border-destructive/50 bg-destructive/10">
             <CardContent className="py-6">
-              <div className="flex items-center gap-3 text-red-800">
+              <div className="flex items-center gap-3 text-destructive">
                 <XCircle className="h-5 w-5" />
                 <p>{error}</p>
               </div>
@@ -121,12 +126,12 @@ export default function SourcesPage() {
         ) : (
           <>
             {/* Status Card */}
-            <Card>
+            <Card className="animate-fade-in-up">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${data?.ingested ? "bg-green-100" : "bg-amber-100"}`}>
-                      <Database className={`h-5 w-5 ${data?.ingested ? "text-green-600" : "text-amber-600"}`} />
+                    <div className={`p-2 rounded-lg ${data?.ingested ? "bg-green-100 dark:bg-green-900/30" : "bg-amber-100 dark:bg-amber-900/30"}`}>
+                      <Database className={`h-5 w-5 ${data?.ingested ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"}`} />
                     </div>
                     <div>
                       <CardTitle>Document Status</CardTitle>
@@ -137,7 +142,7 @@ export default function SourcesPage() {
                       </CardDescription>
                     </div>
                   </div>
-                  <Badge variant={data?.ingested ? "success" : "warning"}>
+                  <Badge variant={data?.ingested ? "default" : "secondary"} className={data?.ingested ? "bg-green-600" : ""}>
                     {data?.ingested ? "Ready" : "Not Ingested"}
                   </Badge>
                 </div>
@@ -145,31 +150,31 @@ export default function SourcesPage() {
               <CardContent className="space-y-4">
                 {data?.ingested && (
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-slate-50 rounded-lg p-3">
-                      <p className="text-sm text-slate-500">Chunks</p>
-                      <p className="text-2xl font-semibold text-slate-900">{data.chunkCount}</p>
+                    <div className="bg-muted rounded-lg p-3">
+                      <p className="text-sm text-muted-foreground">Chunks</p>
+                      <p className="text-2xl font-semibold text-foreground">{data.chunkCount}</p>
                     </div>
-                    <div className="bg-slate-50 rounded-lg p-3">
-                      <p className="text-sm text-slate-500">Sections</p>
-                      <p className="text-2xl font-semibold text-slate-900">{data.sectionCount}</p>
+                    <div className="bg-muted rounded-lg p-3">
+                      <p className="text-sm text-muted-foreground">Sections</p>
+                      <p className="text-2xl font-semibold text-foreground">{data.sectionCount}</p>
                     </div>
-                    <div className="bg-slate-50 rounded-lg p-3">
-                      <p className="text-sm text-slate-500">Total Tokens</p>
-                      <p className="text-2xl font-semibold text-slate-900">{data.totalTokens.toLocaleString()}</p>
+                    <div className="bg-muted rounded-lg p-3">
+                      <p className="text-sm text-muted-foreground">Total Tokens</p>
+                      <p className="text-2xl font-semibold text-foreground">{data.totalTokens.toLocaleString()}</p>
                     </div>
-                    <div className="bg-slate-50 rounded-lg p-3">
-                      <p className="text-sm text-slate-500">Ingested</p>
-                      <p className="text-sm font-medium text-slate-900">{formatDate(data.ingestedAt)}</p>
+                    <div className="bg-muted rounded-lg p-3">
+                      <p className="text-sm text-muted-foreground">Ingested</p>
+                      <p className="text-sm font-medium text-foreground">{formatDate(data.ingestedAt)}</p>
                     </div>
                   </div>
                 )}
 
                 {/* Re-ingest button */}
-                <div className="pt-4 border-t border-slate-100">
+                <div className="pt-4 border-t border-border">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-slate-900">Re-ingest Document</p>
-                      <p className="text-sm text-slate-500">
+                      <p className="font-medium text-foreground">Re-ingest Document</p>
+                      <p className="text-sm text-muted-foreground">
                         Parse and embed the source document again (dev mode only)
                       </p>
                     </div>
@@ -189,10 +194,10 @@ export default function SourcesPage() {
                   </div>
 
                   {ingestResult && (
-                    <div className={`mt-4 p-3 rounded-lg flex items-center gap-2 ${
+                    <div className={`mt-4 p-3 rounded-lg flex items-center gap-2 animate-fade-in ${
                       ingestResult.success 
-                        ? "bg-green-50 text-green-800 border border-green-200" 
-                        : "bg-red-50 text-red-800 border border-red-200"
+                        ? "bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200 border border-green-200 dark:border-green-800" 
+                        : "bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-800"
                     }`}>
                       {ingestResult.success ? (
                         <CheckCircle className="h-4 w-4" />
@@ -208,10 +213,10 @@ export default function SourcesPage() {
 
             {/* Document Info */}
             {data?.ingested && data.documentName && (
-              <Card>
+              <Card className="animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
                 <CardHeader>
                   <div className="flex items-center gap-3">
-                    <FileText className="h-5 w-5 text-slate-400" />
+                    <FileText className="h-5 w-5 text-muted-foreground" />
                     <div>
                       <CardTitle className="text-base">{data.documentName}</CardTitle>
                       <CardDescription className="text-xs font-mono">
@@ -225,7 +230,7 @@ export default function SourcesPage() {
 
             {/* Sections List */}
             {data?.ingested && data.headings.length > 0 && (
-              <Card>
+              <Card className="animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
                 <CardHeader>
                   <CardTitle className="text-base">Document Sections</CardTitle>
                   <CardDescription>
@@ -246,41 +251,41 @@ export default function SourcesPage() {
 
             {/* Instructions */}
             {!data?.ingested && (
-              <Card>
+              <Card className="animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
                 <CardHeader>
                   <CardTitle className="text-base">Getting Started</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-3">
                     <div className="flex items-start gap-3">
-                      <div className="h-6 w-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-sm font-medium">
+                      <div className="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-medium">
                         1
                       </div>
                       <div>
-                        <p className="font-medium text-slate-900">Place your document</p>
-                        <p className="text-sm text-slate-500">
-                          Copy your .docx file to the <code className="bg-slate-100 px-1 rounded">data/</code> folder
+                        <p className="font-medium text-foreground">Place your document</p>
+                        <p className="text-sm text-muted-foreground">
+                          Copy your .docx file to the <code className="bg-muted px-1 rounded">data/</code> folder
                         </p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <div className="h-6 w-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-sm font-medium">
+                      <div className="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-medium">
                         2
                       </div>
                       <div>
-                        <p className="font-medium text-slate-900">Run ingestion</p>
-                        <p className="text-sm text-slate-500">
-                          Run <code className="bg-slate-100 px-1 rounded">npm run ingest</code> or click the Re-ingest button above
+                        <p className="font-medium text-foreground">Run ingestion</p>
+                        <p className="text-sm text-muted-foreground">
+                          Run <code className="bg-muted px-1 rounded">npm run ingest</code> or click the Re-ingest button above
                         </p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <div className="h-6 w-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-sm font-medium">
+                      <div className="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-medium">
                         3
                       </div>
                       <div>
-                        <p className="font-medium text-slate-900">Start asking questions</p>
-                        <p className="text-sm text-slate-500">
+                        <p className="font-medium text-foreground">Start asking questions</p>
+                        <p className="text-sm text-muted-foreground">
                           Go to the Chat page and ask questions about your document
                         </p>
                       </div>
@@ -295,4 +300,3 @@ export default function SourcesPage() {
     </main>
   );
 }
-
