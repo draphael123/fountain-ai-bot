@@ -39,9 +39,10 @@ next-env.d.ts
 *.sqlite
 *.sqlite3
 
-# Data files (except .gitkeep)
+# Data files (except .gitkeep and embedded-data.json)
 /data/*
 !/data/.gitkeep
+!/data/embedded-data.json
 
 # IDE
 .idea/

@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 
 export default function ChatPage() {
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="h-screen flex flex-col bg-slate-50">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
+      <header className="bg-white border-b border-slate-200 flex-shrink-0">
         <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -38,10 +38,11 @@ export default function ChatPage() {
       </header>
 
       {/* Chat Interface */}
-      <div className="max-w-4xl mx-auto px-6 py-6">
-        <ChatInterface />
+      <div className="flex-1 overflow-hidden">
+        <div className="max-w-4xl mx-auto px-6 py-4 h-full">
+          <ChatInterface />
+        </div>
       </div>
     </main>
   );
 }
-

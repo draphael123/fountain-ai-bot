@@ -1,40 +1,29 @@
 import { NextResponse } from "next/server";
-import { getMetadata, getAllMetadata, getChunkCount, getAllChunks, ensureDbInitialized } from "@/lib/db/client";
+import { getMetadata, getChunkCount, getUniqueHeadings, hasData } from "@/lib/db/static-store";
 
 export const runtime = "nodejs";
 
 export async function GET() {
   try {
-    // Ensure database is initialized
-    await ensureDbInitialized();
-    
-    const metadata = getAllMetadata();
+    const ingested = hasData();
+    const metadata = getMetadata();
     const chunkCount = getChunkCount();
-    
-    // Convert metadata array to object
-    const metadataObj = metadata.reduce(
-      (acc, { key, value }) => ({ ...acc, [key]: value }),
-      {} as Record<string, string>
-    );
-
-    // Get unique headings from chunks
-    const chunks = getAllChunks();
-    const headings = [...new Set(chunks.map((c) => c.heading))];
+    const headings = getUniqueHeadings();
 
     return NextResponse.json({
-      ingested: chunkCount > 0,
-      documentName: metadataObj.document_name || null,
-      documentPath: metadataObj.document_path || null,
+      ingested,
+      documentName: metadata?.document_name || null,
+      documentPath: metadata?.document_path || null,
       chunkCount,
-      sectionCount: parseInt(metadataObj.section_count || "0"),
-      totalTokens: parseInt(metadataObj.total_tokens || "0"),
-      ingestedAt: metadataObj.ingested_at || null,
+      sectionCount: metadata?.section_count || 0,
+      totalTokens: metadata?.total_tokens || 0,
+      ingestedAt: metadata?.ingested_at || null,
       headings,
     });
   } catch (error) {
     console.error("Sources API error:", error);
     
-    // If database doesn't exist yet, return empty state
+    // Return empty state on error
     return NextResponse.json({
       ingested: false,
       documentName: null,

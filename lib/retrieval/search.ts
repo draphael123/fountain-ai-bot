@@ -1,5 +1,5 @@
 import { embedText, cosineSimilarity } from "./embeddings";
-import { getAllChunksWithEmbeddings, getChunksByIds, ensureDbInitialized } from "@/lib/db/client";
+import { getAllChunksWithEmbeddings, getChunksByIds } from "@/lib/db/static-store";
 import { config } from "@/lib/config";
 
 export interface SearchResult {
@@ -19,9 +19,6 @@ export async function searchChunks(
   query: string,
   topK: number = config.defaultTopK
 ): Promise<SearchResult[]> {
-  // Ensure DB is initialized
-  await ensureDbInitialized();
-
   // Get query embedding
   const queryEmbedding = await embedText(query);
 

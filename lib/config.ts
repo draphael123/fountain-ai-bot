@@ -13,7 +13,7 @@ export const config = {
   anthropicModel: process.env.ANTHROPIC_MODEL || "claude-3-5-sonnet-20241022",
   
   // Document
-  documentPath: process.env.DOCUMENT_PATH || "./data/source.docx",
+  documentPath: process.env.DOCUMENT_PATH || "./Fountain Workflows (Updated 1_2) (1).docx",
   
   // Dev mode
   devMode: process.env.DEV_MODE === "true",

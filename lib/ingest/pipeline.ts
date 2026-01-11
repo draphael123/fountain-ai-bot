@@ -1,13 +1,7 @@
 import { parseDocx } from "./docx-parser";
-import { chunkSections, mergeSmallSections, type Chunk } from "./chunker";
+import { chunkSections, mergeSmallSections } from "./chunker";
 import { embedTexts } from "@/lib/retrieval/embeddings";
-import {
-  insertChunks,
-  setMetadata,
-  clearAllData,
-  ensureDbInitialized,
-} from "@/lib/db/client";
-import type { Chunk as DbChunk } from "@/lib/db/schema";
+import { saveStaticData, type StoredChunk, type StaticData } from "@/lib/db/static-store";
 import { config } from "@/lib/config";
 import path from "path";
 
@@ -34,9 +28,6 @@ export async function ingestDocument(
   console.log(`\n📄 Starting document ingestion: ${docPath}`);
 
   try {
-    // Ensure database is initialized
-    await ensureDbInitialized();
-
     // Step 1: Parse DOCX
     console.log("  → Parsing DOCX file...");
     const sections = await parseDocx(docPath);
@@ -62,11 +53,8 @@ export async function ingestDocument(
     const embeddings = await embedTexts(contents);
     console.log(`    Generated ${embeddings.length} embeddings`);
 
-    // Step 5: Clear existing data and store new chunks
-    console.log("  → Storing chunks in database...");
-    await clearAllData();
-
-    const dbChunks: DbChunk[] = chunks.map((chunk, i) => ({
+    // Step 5: Create stored chunks with embeddings
+    const storedChunks: StoredChunk[] = chunks.map((chunk, i) => ({
       id: chunk.id,
       heading: chunk.heading,
       content: chunk.content,
@@ -74,25 +62,31 @@ export async function ingestDocument(
       offset_start: chunk.offsetStart,
       offset_end: chunk.offsetEnd,
       token_count: chunk.tokenCount,
-      embedding: JSON.stringify(embeddings[i]),
-      created_at: timestamp,
+      embedding: embeddings[i],
     }));
 
-    await insertChunks(dbChunks);
-
-    // Step 6: Store metadata
+    // Step 6: Calculate totals and save
     const totalTokens = chunks.reduce((sum, c) => sum + c.tokenCount, 0);
-    await setMetadata("document_path", docPath);
-    await setMetadata("document_name", path.basename(docPath));
-    await setMetadata("section_count", mergedSections.length.toString());
-    await setMetadata("chunk_count", chunks.length.toString());
-    await setMetadata("total_tokens", totalTokens.toString());
-    await setMetadata("ingested_at", timestamp);
+    
+    const staticData: StaticData = {
+      chunks: storedChunks,
+      metadata: {
+        document_name: path.basename(docPath),
+        document_path: docPath,
+        section_count: mergedSections.length,
+        chunk_count: chunks.length,
+        total_tokens: totalTokens,
+        ingested_at: timestamp,
+      },
+    };
+
+    saveStaticData(staticData);
 
     console.log(`\n✅ Ingestion complete!`);
     console.log(`   Sections: ${mergedSections.length}`);
     console.log(`   Chunks: ${chunks.length}`);
     console.log(`   Total tokens: ${totalTokens.toLocaleString()}`);
+    console.log(`   Data saved to: data/embedded-data.json`);
 
     return {
       success: true,
@@ -123,13 +117,10 @@ export async function ingestDocument(
 /**
  * Check if document has been ingested
  */
-export async function isDocumentIngested(): Promise<boolean> {
+export function isDocumentIngested(): boolean {
   try {
-    await ensureDbInitialized();
-    const { getMetadata, getChunkCount } = await import("@/lib/db/client");
-    const ingestedAt = getMetadata("ingested_at");
-    const chunkCount = getChunkCount();
-    return !!ingestedAt && chunkCount > 0;
+    const { hasData } = require("@/lib/db/static-store");
+    return hasData();
   } catch {
     return false;
   }

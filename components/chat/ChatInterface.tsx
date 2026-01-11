@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { CitationCard } from "./CitationCard";
 import { EscalationBanner } from "./EscalationBanner";
 import { StrictModeToggle } from "@/components/StrictModeToggle";
-import { detectPHI, getPHIWarning } from "@/lib/compliance/phi-detector";
+import { getPHIWarning } from "@/lib/compliance/phi-detector";
 import { getEscalationWarning } from "@/lib/compliance/escalation-detector";
 import { cn } from "@/lib/utils";
 
@@ -196,9 +196,9 @@ export function ChatInterface() {
   const lastAssistantMessage = messages.filter((m) => m.role === "assistant").pop();
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)]">
+    <div className="flex flex-col h-full">
       {/* Controls */}
-      <div className="flex items-center justify-between gap-4 pb-4 border-b border-slate-200">
+      <div className="flex items-center justify-between gap-4 pb-4 border-b border-slate-200 flex-shrink-0">
         <StrictModeToggle enabled={strictMode} onToggle={setStrictMode} />
         
         <div className="flex items-center gap-2">
@@ -222,7 +222,7 @@ export function ChatInterface() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto py-6 space-y-6">
+      <div className="flex-1 overflow-y-auto py-6 space-y-6 min-h-0">
         {messages.length === 0 && (
           <div className="text-center py-12">
             <p className="text-slate-500 text-lg">
@@ -350,56 +350,59 @@ export function ChatInterface() {
       </div>
 
       {/* Warnings */}
-      <div className="space-y-2 pb-2">
-        {phiWarning && (
-          <div className="bg-amber-50 border border-amber-200 text-amber-800 text-sm p-3 rounded-lg">
-            ⚠️ {phiWarning}
-          </div>
-        )}
-        
-        {escalation.show && (
-          <EscalationBanner
-            categories={escalation.categories}
-            message={escalation.message}
-            onDismiss={() => setEscalation({ show: false, categories: [], message: "" })}
-          />
-        )}
-      </div>
-
-      {/* Input */}
-      <form onSubmit={handleSubmit} className="border-t border-slate-200 pt-4">
-        <div className="flex gap-3">
-          <Textarea
-            ref={textareaRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask a question about workflows..."
-            className="flex-1 min-h-[60px] max-h-[200px] resize-none"
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleSubmit(e);
-              }
-            }}
-            disabled={isLoading}
-          />
-          <Button
-            type="submit"
-            disabled={!input.trim() || isLoading}
-            className="px-6"
-          >
-            {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Send className="h-4 w-4" />
-            )}
-          </Button>
+      {(phiWarning || escalation.show) && (
+        <div className="space-y-2 pb-2 flex-shrink-0">
+          {phiWarning && (
+            <div className="bg-amber-50 border border-amber-200 text-amber-800 text-sm p-3 rounded-lg">
+              ⚠️ {phiWarning}
+            </div>
+          )}
+          
+          {escalation.show && (
+            <EscalationBanner
+              categories={escalation.categories}
+              message={escalation.message}
+              onDismiss={() => setEscalation({ show: false, categories: [], message: "" })}
+            />
+          )}
         </div>
-        <p className="text-xs text-slate-400 mt-2">
-          Press Enter to send, Shift+Enter for new line
-        </p>
-      </form>
+      )}
+
+      {/* Input - Always visible at bottom */}
+      <div className="border-t border-slate-200 pt-4 bg-slate-50 flex-shrink-0">
+        <form onSubmit={handleSubmit}>
+          <div className="flex gap-3">
+            <Textarea
+              ref={textareaRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Ask a question about workflows..."
+              className="flex-1 min-h-[60px] max-h-[120px] resize-none bg-white"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit(e);
+                }
+              }}
+              disabled={isLoading}
+            />
+            <Button
+              type="submit"
+              disabled={!input.trim() || isLoading}
+              className="px-6 h-[60px]"
+            >
+              {isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+          <p className="text-xs text-slate-400 mt-2">
+            Press Enter to send, Shift+Enter for new line
+          </p>
+        </form>
+      </div>
     </div>
   );
 }
-
