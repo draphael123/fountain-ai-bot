@@ -257,6 +257,87 @@ function openSettings() {
   chrome.runtime.openOptionsPage();
 }
 
+// Feedback Modal
+const feedbackModal = document.getElementById("feedback-modal");
+const feedbackFormContainer = document.getElementById("feedback-form-container");
+const feedbackSuccess = document.getElementById("feedback-success");
+const feedbackMessage = document.getElementById("feedback-message");
+const feedbackEmail = document.getElementById("feedback-email");
+const feedbackTypeBtns = document.querySelectorAll(".feedback-type-btn");
+let selectedFeedbackType = "suggestion";
+
+function openFeedbackModal() {
+  feedbackModal.classList.remove("hidden");
+  feedbackFormContainer.classList.remove("hidden");
+  feedbackSuccess.classList.add("hidden");
+  feedbackMessage.value = "";
+  feedbackEmail.value = "";
+  selectedFeedbackType = "suggestion";
+  updateFeedbackTypeButtons();
+}
+
+function closeFeedbackModal() {
+  feedbackModal.classList.add("hidden");
+}
+
+function updateFeedbackTypeButtons() {
+  feedbackTypeBtns.forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.type === selectedFeedbackType);
+  });
+}
+
+async function submitFeedback() {
+  const message = feedbackMessage.value.trim();
+  const email = feedbackEmail.value.trim();
+  
+  if (!message) {
+    feedbackMessage.style.borderColor = "var(--error-text)";
+    return;
+  }
+  
+  feedbackMessage.style.borderColor = "";
+  
+  const feedback = {
+    type: selectedFeedbackType,
+    message,
+    email: email || undefined,
+    timestamp: new Date().toISOString(),
+    source: "extension",
+  };
+  
+  // Store locally
+  try {
+    const existing = JSON.parse(localStorage.getItem("fountain-feedback") || "[]");
+    existing.push(feedback);
+    localStorage.setItem("fountain-feedback", JSON.stringify(existing));
+  } catch (e) {
+    console.error("Failed to save feedback:", e);
+  }
+  
+  // Show success
+  feedbackFormContainer.classList.add("hidden");
+  feedbackSuccess.classList.remove("hidden");
+  
+  // Close after delay
+  setTimeout(() => {
+    closeFeedbackModal();
+  }, 2000);
+}
+
+// Setup feedback event listeners
+document.getElementById("open-feedback")?.addEventListener("click", openFeedbackModal);
+document.getElementById("close-feedback")?.addEventListener("click", closeFeedbackModal);
+document.getElementById("cancel-feedback")?.addEventListener("click", closeFeedbackModal);
+document.getElementById("submit-feedback")?.addEventListener("click", submitFeedback);
+document.querySelector(".modal-backdrop")?.addEventListener("click", closeFeedbackModal);
+
+feedbackTypeBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    selectedFeedbackType = btn.dataset.type;
+    updateFeedbackTypeButtons();
+  });
+});
+
 function updateAskButton() {
   askBtn.disabled = !questionInput.value.trim() || isLoading;
 }

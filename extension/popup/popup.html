@@ -141,6 +141,15 @@
 
     <!-- Footer -->
     <div class="popup-footer">
+      <button id="open-feedback" class="footer-link">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          <line x1="12" x2="12" y1="8" y2="12"/>
+          <line x1="12" x2="12.01" y1="16" y2="16"/>
+        </svg>
+        Feedback
+      </button>
+      <span class="footer-divider">•</span>
       <button id="open-settings" class="footer-link">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="3"/>
@@ -149,7 +158,76 @@
         Settings
       </button>
       <span class="footer-divider">•</span>
-      <span class="footer-version">v1.1.0</span>
+      <span class="footer-version">v1.2.0</span>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div id="feedback-modal" class="modal hidden">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            Send Feedback
+          </div>
+          <button id="close-feedback" class="modal-close">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" x2="6" y1="6" y2="18"/>
+              <line x1="6" x2="18" y1="6" y2="18"/>
+            </svg>
+          </button>
+        </div>
+        
+        <div id="feedback-form-container" class="modal-body">
+          <div class="feedback-types">
+            <button class="feedback-type-btn active" data-type="suggestion">
+              💡 Suggestion
+            </button>
+            <button class="feedback-type-btn" data-type="bug">
+              🐛 Bug
+            </button>
+            <button class="feedback-type-btn" data-type="question">
+              ❓ Question
+            </button>
+          </div>
+          
+          <div class="form-group">
+            <label>Your feedback</label>
+            <textarea id="feedback-message" placeholder="Tell us what you think..." rows="4"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label>Email <span class="optional">(optional)</span></label>
+            <input type="email" id="feedback-email" placeholder="your@email.com">
+          </div>
+          
+          <div class="modal-actions">
+            <button id="cancel-feedback" class="btn-secondary">Cancel</button>
+            <button id="submit-feedback" class="btn-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" x2="11" y1="2" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+              Send
+            </button>
+          </div>
+        </div>
+        
+        <div id="feedback-success" class="modal-body hidden">
+          <div class="success-content">
+            <div class="success-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+            <h3>Thank you!</h3>
+            <p>Your feedback has been received.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

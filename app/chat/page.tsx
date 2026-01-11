@@ -16,6 +16,7 @@ import { EscalationBanner } from "@/components/chat/EscalationBanner";
 import { StrictModeToggle } from "@/components/StrictModeToggle";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ExtensionBanner } from "@/components/ExtensionBanner";
+import { FeedbackButton } from "@/components/FeedbackModal";
 import { getPHIWarning } from "@/lib/compliance/phi-detector";
 import { getEscalationWarning } from "@/lib/compliance/escalation-detector";
 import { cn } from "@/lib/utils";
@@ -631,6 +632,9 @@ export default function ChatPage() {
           </form>
         </div>
       </div>
+
+      {/* Feedback Button */}
+      <FeedbackButton />
     </div>
   );
 }

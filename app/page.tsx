@@ -6,6 +6,7 @@ import { ArrowRight, FileText, Shield, MessageSquare, AlertTriangle, Sparkles, C
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { FeedbackButton } from "@/components/FeedbackModal";
 
 export default function HomePage() {
   return (
@@ -244,6 +245,9 @@ export default function HomePage() {
           </p>
         </div>
       </footer>
+
+      {/* Feedback Button */}
+      <FeedbackButton />
     </main>
   );
 }
