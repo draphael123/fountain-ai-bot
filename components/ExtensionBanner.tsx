@@ -39,11 +39,7 @@ export function ExtensionBanner() {
             Access Fountain Workflows from anywhere in your browser with our Chrome extension.
           </p>
           <div className="flex items-center gap-3 mt-3">
-            <a 
-              href="https://github.com/draphael123/fountain-ai-bot/tree/main/extension"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="/fountain-extension.zip" download>
               <Button size="sm" className="gap-2">
                 <Chrome className="h-4 w-4" />
                 Download Extension

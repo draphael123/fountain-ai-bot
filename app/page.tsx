@@ -168,20 +168,16 @@ export default function HomePage() {
               <div className="space-y-4">
                 <h3 className="font-semibold text-foreground">Installation</h3>
                 <ol className="space-y-2 text-sm text-muted-foreground list-decimal list-inside">
-                  <li>Download the extension from GitHub</li>
+                  <li>Download and unzip the extension</li>
                   <li>Open <code className="bg-muted px-1.5 py-0.5 rounded text-xs">chrome://extensions</code></li>
                   <li>Enable &quot;Developer mode&quot; (top right)</li>
-                  <li>Click &quot;Load unpacked&quot; and select the extension folder</li>
+                  <li>Click &quot;Load unpacked&quot; and select the unzipped folder</li>
                 </ol>
                 <div className="flex gap-3 pt-2">
-                  <a 
-                    href="https://github.com/draphael123/fountain-ai-bot/tree/main/extension" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                  >
+                  <a href="/fountain-extension.zip" download>
                     <Button variant="default" size="sm" className="gap-2">
                       <Download className="h-4 w-4" />
-                      Download Extension
+                      Download Extension (.zip)
                     </Button>
                   </a>
                   <a 
