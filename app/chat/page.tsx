@@ -242,10 +242,31 @@ export default function ChatPage() {
         );
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "An error occurred";
+      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+      
+      // Create a more user-friendly error message with suggestions
+      let displayError = errorMessage;
+      let suggestion = "";
+      
+      if (errorMessage.includes("API key") || errorMessage.includes("401") || errorMessage.includes("Invalid API")) {
+        suggestion = "The API key may be invalid or expired. Please contact the administrator.";
+      } else if (errorMessage.includes("quota") || errorMessage.includes("429") || errorMessage.includes("billing")) {
+        suggestion = "The service quota has been exceeded. Please try again later or contact the administrator.";
+      } else if (errorMessage.includes("network") || errorMessage.includes("connect") || errorMessage.includes("ENOTFOUND")) {
+        suggestion = "Please check your internet connection and try again.";
+      } else if (errorMessage.includes("ingested") || errorMessage.includes("No document")) {
+        suggestion = "The document database may not be set up. Please contact the administrator.";
+      } else if (errorMessage.includes("timeout") || errorMessage.includes("ETIMEDOUT")) {
+        suggestion = "The request timed out. Please try again with a shorter question.";
+      }
+      
+      const fullError = suggestion 
+        ? `${displayError}\n\n💡 ${suggestion}`
+        : displayError;
+      
       setMessages((prev) =>
         prev.map((msg) =>
-          msg.id === assistantId ? { ...msg, content: `Error: ${errorMessage}` } : msg
+          msg.id === assistantId ? { ...msg, content: `❌ ${fullError}` } : msg
         )
       );
     } finally {

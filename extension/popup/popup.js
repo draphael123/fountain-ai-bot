@@ -384,7 +384,27 @@ function hideLoading() {
 }
 
 function showError(message) {
-  errorText.textContent = message;
+  // Create a more user-friendly error message with suggestions
+  let displayError = message;
+  let suggestion = "";
+  
+  if (message.includes("API key") || message.includes("401") || message.includes("Invalid API")) {
+    suggestion = "The API key may be invalid. Please contact the administrator.";
+  } else if (message.includes("quota") || message.includes("429") || message.includes("billing")) {
+    suggestion = "Service quota exceeded. Please try again later.";
+  } else if (message.includes("network") || message.includes("connect") || message.includes("Failed to fetch")) {
+    suggestion = "Check your internet connection and try again.";
+  } else if (message.includes("ingested") || message.includes("No document")) {
+    suggestion = "Document database not found. Contact the administrator.";
+  } else if (message.includes("timeout")) {
+    suggestion = "Request timed out. Try a shorter question.";
+  }
+  
+  const fullError = suggestion 
+    ? `${displayError}\n\n💡 ${suggestion}`
+    : displayError;
+  
+  errorText.innerHTML = fullError.replace(/\n/g, '<br>');
   errorEl.classList.remove("hidden");
 }
 

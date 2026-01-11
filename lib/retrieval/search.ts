@@ -19,15 +19,18 @@ export async function searchChunks(
   query: string,
   topK: number = config.defaultTopK
 ): Promise<SearchResult[]> {
-  // Get query embedding
-  const queryEmbedding = await embedText(query);
-
-  // Get all chunks with embeddings
+  // Get all chunks with embeddings first to check if document is ingested
   const chunks = getAllChunksWithEmbeddings();
 
   if (chunks.length === 0) {
-    return [];
+    throw new Error(
+      "No document data found. The document needs to be ingested first. " +
+      "Please contact your administrator or run 'npm run ingest' locally."
+    );
   }
+
+  // Get query embedding
+  const queryEmbedding = await embedText(query);
 
   // Calculate similarity scores
   const scored = chunks.map((chunk) => ({
