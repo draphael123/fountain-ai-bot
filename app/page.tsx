@@ -1,7 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, FileText, Shield, MessageSquare, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function HomePage() {
   return (
@@ -10,8 +11,19 @@ export default function HomePage() {
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100 via-transparent to-transparent opacity-50" />
         
-        <div className="relative max-w-5xl mx-auto px-6 pt-20 pb-16">
+        <div className="relative max-w-5xl mx-auto px-6 pt-16 pb-16">
           <div className="text-center space-y-6">
+            {/* Logo */}
+            <div className="flex justify-center mb-4">
+              <Image 
+                src="/logo.png" 
+                alt="Fountain Workflows Logo" 
+                width={120} 
+                height={120}
+                className="rounded-2xl shadow-lg"
+              />
+            </div>
+
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-100 rounded-full text-blue-700 text-sm font-medium">
               <Shield className="h-4 w-4" />
               Internal Operations Tool
@@ -152,12 +164,21 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="border-t border-slate-200 bg-white">
         <div className="max-w-5xl mx-auto px-6 py-6">
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <Image 
+              src="/logo.png" 
+              alt="Fountain Workflows Logo" 
+              width={24} 
+              height={24}
+              className="rounded"
+            />
+            <span className="font-medium text-slate-700">Fountain Workflows Assistant</span>
+          </div>
           <p className="text-center text-sm text-slate-500">
-            Fountain Workflows Assistant &bull; Internal Use Only &bull; Do Not Share Externally
+            Internal Use Only &bull; Do Not Share Externally
           </p>
         </div>
       </footer>
     </main>
   );
 }
-

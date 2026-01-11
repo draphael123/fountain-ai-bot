@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, FileText, Send, Loader2, Copy, Check, Eye, EyeOff, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -182,6 +183,13 @@ export default function ChatPage() {
                   Back
                 </Button>
               </Link>
+              <Image 
+                src="/logo.png" 
+                alt="Logo" 
+                width={40} 
+                height={40}
+                className="rounded-lg"
+              />
               <div>
                 <h1 className="text-lg font-semibold text-slate-900">Fountain Workflows Q&A</h1>
                 <p className="text-sm text-slate-500">Ask questions about internal procedures</p>
