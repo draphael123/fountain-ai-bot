@@ -5,6 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fountain Workflows - Settings</title>
   <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #dbeafe;
+      --background: #f8fafc;
+      --foreground: #0f172a;
+      --card: #ffffff;
+      --card-foreground: #1e293b;
+      --muted: #f1f5f9;
+      --muted-foreground: #64748b;
+      --border: #e2e8f0;
+      --success-bg: #dcfce7;
+      --success-text: #166534;
+      --error-bg: #fef2f2;
+      --error-text: #991b1b;
+    }
+    
     * {
       box-sizing: border-box;
       margin: 0;
@@ -15,135 +32,192 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       font-size: 14px;
       line-height: 1.5;
-      color: #1e293b;
-      background: #f8fafc;
+      color: var(--card-foreground);
+      background: var(--background);
       padding: 40px;
     }
     
     .container {
       max-width: 500px;
       margin: 0 auto;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
       overflow: hidden;
+      border: 1px solid var(--border);
     }
     
     .header {
-      padding: 24px;
-      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      padding: 28px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
       color: white;
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
     
-    .header h1 {
+    .header-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 6px;
+    }
+    
+    .header-logo img {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    
+    .header-text h1 {
       font-size: 20px;
       font-weight: 600;
     }
     
-    .header p {
+    .header-text p {
       font-size: 14px;
       opacity: 0.9;
-      margin-top: 4px;
+      margin-top: 2px;
     }
     
     .content {
-      padding: 24px;
+      padding: 28px;
     }
     
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
     
     .form-group label {
       display: block;
-      font-weight: 500;
-      margin-bottom: 8px;
-      color: #334155;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--foreground);
     }
     
     .form-group input {
       width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
       font-size: 14px;
-      transition: border-color 0.15s;
+      transition: all 0.15s;
+      background: var(--card);
     }
     
     .form-group input:focus {
       outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .form-group input::placeholder {
+      color: var(--muted-foreground);
     }
     
     .form-group small {
       display: block;
-      margin-top: 6px;
-      color: #64748b;
+      margin-top: 8px;
+      color: var(--muted-foreground);
       font-size: 12px;
+      line-height: 1.5;
     }
     
     .btn {
-      padding: 10px 20px;
+      padding: 12px 24px;
       border: none;
-      border-radius: 6px;
+      border-radius: 10px;
       font-size: 14px;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.15s;
     }
     
     .btn-primary {
-      background: #3b82f6;
+      background: var(--primary);
       color: white;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
     }
     
     .btn-primary:hover {
-      background: #2563eb;
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
     }
     
     .btn-secondary {
-      background: #f1f5f9;
-      color: #334155;
-      margin-left: 10px;
+      background: var(--muted);
+      color: var(--card-foreground);
+      border: 1px solid var(--border);
     }
     
     .btn-secondary:hover {
-      background: #e2e8f0;
+      background: var(--border);
     }
     
     .actions {
       display: flex;
-      gap: 10px;
+      gap: 12px;
     }
     
     .status {
-      margin-top: 16px;
-      padding: 10px 12px;
-      border-radius: 6px;
+      margin-top: 20px;
+      padding: 12px 14px;
+      border-radius: 10px;
       font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     
     .status.success {
-      background: #dcfce7;
-      color: #166534;
+      background: var(--success-bg);
+      color: var(--success-text);
     }
     
     .status.error {
-      background: #fee2e2;
-      color: #991b1b;
+      background: var(--error-bg);
+      color: var(--error-text);
     }
     
     .hidden {
       display: none;
+    }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: var(--muted);
+      border-radius: 3px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--muted-foreground);
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>Fountain Workflows Settings</h1>
-      <p>Configure your extension preferences</p>
+      <div class="header-logo">
+        <img src="../icons/icon48.png" alt="Logo">
+      </div>
+      <div class="header-text">
+        <h1>Fountain Workflows Settings</h1>
+        <p>Configure your extension preferences</p>
+      </div>
     </div>
     
     <div class="content">
@@ -173,4 +247,3 @@
   <script src="options.js"></script>
 </body>
 </html>
-
