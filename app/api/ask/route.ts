@@ -13,6 +13,15 @@ interface AskRequest {
 
 export async function POST(request: NextRequest) {
   try {
+    // Log config for debugging (redact sensitive data)
+    console.log("Config check:", {
+      llmProvider: config.llmProvider,
+      hasOpenAIKey: !!config.openaiApiKey,
+      openAIKeyLength: config.openaiApiKey?.length || 0,
+      openAIKeyPrefix: config.openaiApiKey?.slice(0, 10) || "not set",
+      model: config.openaiModel,
+    });
+
     // Validate configuration first
     const configValidation = validateConfig();
     if (!configValidation.valid) {
@@ -84,16 +93,44 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Ask API error:", error);
     
+    // Get detailed error info
     const message = error instanceof Error ? error.message : "Unknown error";
+    const errorName = error instanceof Error ? error.name : "Unknown";
     const stack = error instanceof Error ? error.stack : "";
     
-    console.error("Error message:", message);
-    console.error("Error stack:", stack);
+    console.error("Error details:", { name: errorName, message, stack });
     
-    // Check for specific error types
-    if (message.includes("API key") || message.includes("apiKey") || message.includes("Incorrect API key")) {
+    // Check for OpenAI specific errors
+    if (error && typeof error === "object" && "status" in error) {
+      const apiError = error as { status: number; message?: string; code?: string };
+      console.error("API Error status:", apiError.status, "code:", apiError.code);
+      
+      if (apiError.status === 401) {
+        return NextResponse.json(
+          { error: "Invalid OpenAI API key. Please check your OPENAI_API_KEY environment variable." },
+          { status: 500 }
+        );
+      }
+      
+      if (apiError.status === 429) {
+        return NextResponse.json(
+          { error: "OpenAI rate limit or quota exceeded. Please try again later or check your billing." },
+          { status: 429 }
+        );
+      }
+      
+      if (apiError.status === 500 || apiError.status === 503) {
+        return NextResponse.json(
+          { error: "OpenAI service temporarily unavailable. Please try again." },
+          { status: 503 }
+        );
+      }
+    }
+    
+    // Check for specific error messages
+    if (message.includes("API key") || message.includes("apiKey") || message.includes("Incorrect API key") || message.includes("invalid_api_key")) {
       return NextResponse.json(
-        { error: "OpenAI API key is missing or invalid. Please check your environment variables." },
+        { error: "OpenAI API key is missing or invalid. Please check your OPENAI_API_KEY environment variable." },
         { status: 500 }
       );
     }
@@ -105,17 +142,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (message.includes("rate limit") || message.includes("429")) {
+    if (message.includes("rate limit") || message.includes("429") || message.includes("quota")) {
       return NextResponse.json(
-        { error: "Rate limit exceeded. Please try again in a moment." },
+        { error: "OpenAI API quota exceeded. Please check your billing at platform.openai.com" },
         { status: 429 }
       );
     }
 
-    if (message.includes("insufficient_quota")) {
+    if (message.includes("ENOTFOUND") || message.includes("ECONNREFUSED") || message.includes("network") || message.includes("fetch failed")) {
       return NextResponse.json(
-        { error: "OpenAI API quota exceeded. Please check your billing." },
-        { status: 402 }
+        { error: "Network error connecting to OpenAI. Please try again." },
+        { status: 503 }
       );
     }
 
