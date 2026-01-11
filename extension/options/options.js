@@ -135,8 +135,21 @@ async function testConnection() {
 
 // Apply theme
 function applyTheme(theme) {
-  document.body.setAttribute("data-theme", theme);
+  if (theme === "system") {
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    document.body.setAttribute("data-theme", prefersDark ? "dark" : "light");
+  } else {
+    document.body.setAttribute("data-theme", theme);
+  }
 }
+
+// Listen for system theme changes
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", async (e) => {
+  const result = await chrome.storage.sync.get(["theme"]);
+  if ((result.theme || DEFAULT_SETTINGS.theme) === "system") {
+    document.body.setAttribute("data-theme", e.matches ? "dark" : "light");
+  }
+});
 
 // Show status message
 function showStatus(message, type) {
