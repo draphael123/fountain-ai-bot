@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fountain Workflows Assistant</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+        </div>
+        <div class="header-text">
+          <h1>Fountain Workflows</h1>
+          <p>Ask about internal procedures</p>
+        </div>
+      </div>
+      <button id="settings-btn" class="icon-btn" title="Settings">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Warning Banner -->
+    <div class="warning-banner">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+        <line x1="12" x2="12" y1="9" y2="13"/>
+        <line x1="12" x2="12.01" y1="17" y2="17"/>
+      </svg>
+      <span>Internal use only. Do not paste PHI.</span>
+    </div>
+
+    <!-- Strict Mode Toggle -->
+    <div class="strict-mode">
+      <div class="strict-mode-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span>Strict Mode</span>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="strict-mode" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <!-- Input -->
+    <div class="input-container">
+      <textarea 
+        id="question-input" 
+        placeholder="Ask a question about workflows..."
+        rows="2"
+      ></textarea>
+      <button id="ask-btn" class="ask-btn" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" x2="11" y1="2" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- PHI Warning (hidden by default) -->
+    <div id="phi-warning" class="phi-warning hidden">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+        <line x1="12" x2="12" y1="9" y2="13"/>
+        <line x1="12" x2="12.01" y1="17" y2="17"/>
+      </svg>
+      <span id="phi-warning-text"></span>
+    </div>
+
+    <!-- Escalation Warning (hidden by default) -->
+    <div id="escalation-warning" class="escalation-warning hidden">
+      <div class="escalation-header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+          <line x1="12" x2="12" y1="9" y2="13"/>
+          <line x1="12" x2="12.01" y1="17" y2="17"/>
+        </svg>
+        <strong>Escalation Required</strong>
+      </div>
+      <p id="escalation-text"></p>
+    </div>
+
+    <!-- Answer Area -->
+    <div id="answer-container" class="answer-container hidden">
+      <div class="answer-header">
+        <span>Answer</span>
+        <button id="copy-btn" class="icon-btn" title="Copy answer">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+          </svg>
+        </button>
+      </div>
+      <div id="answer-text" class="answer-text"></div>
+    </div>
+
+    <!-- Citations -->
+    <div id="citations-container" class="citations-container hidden">
+      <div class="citations-header">
+        <span>Citations</span>
+        <span id="citations-count" class="citations-count"></span>
+      </div>
+      <div id="citations-list" class="citations-list"></div>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loading" class="loading hidden">
+      <div class="spinner"></div>
+      <span>Searching document...</span>
+    </div>
+
+    <!-- Error State -->
+    <div id="error" class="error hidden">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="15" x2="9" y1="9" y2="15"/>
+        <line x1="9" x2="15" y1="9" y2="15"/>
+      </svg>
+      <span id="error-text"></span>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
+
