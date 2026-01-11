@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { askStream } from "@/lib/llm/generate";
+import { config, validateConfig } from "@/lib/config";
 
 export const runtime = "nodejs";
 
@@ -12,6 +13,16 @@ interface AskRequest {
 
 export async function POST(request: NextRequest) {
   try {
+    // Validate configuration first
+    const configValidation = validateConfig();
+    if (!configValidation.valid) {
+      console.error("Config validation failed:", configValidation.errors);
+      return NextResponse.json(
+        { error: `Configuration error: ${configValidation.errors.join(", ")}` },
+        { status: 500 }
+      );
+    }
+
     const body = (await request.json()) as AskRequest;
 
     // Validate input
@@ -74,24 +85,42 @@ export async function POST(request: NextRequest) {
     console.error("Ask API error:", error);
     
     const message = error instanceof Error ? error.message : "Unknown error";
+    const stack = error instanceof Error ? error.stack : "";
+    
+    console.error("Error message:", message);
+    console.error("Error stack:", stack);
     
     // Check for specific error types
-    if (message.includes("API key")) {
+    if (message.includes("API key") || message.includes("apiKey") || message.includes("Incorrect API key")) {
       return NextResponse.json(
-        { error: "API key configuration error" },
+        { error: "OpenAI API key is missing or invalid. Please check your environment variables." },
         { status: 500 }
       );
     }
     
-    if (message.includes("No chunks") || message.includes("not ingested")) {
+    if (message.includes("No chunks") || message.includes("not ingested") || message.includes("No data")) {
       return NextResponse.json(
         { error: "Document has not been ingested. Please run 'npm run ingest' first." },
         { status: 400 }
       );
     }
 
+    if (message.includes("rate limit") || message.includes("429")) {
+      return NextResponse.json(
+        { error: "Rate limit exceeded. Please try again in a moment." },
+        { status: 429 }
+      );
+    }
+
+    if (message.includes("insufficient_quota")) {
+      return NextResponse.json(
+        { error: "OpenAI API quota exceeded. Please check your billing." },
+        { status: 402 }
+      );
+    }
+
     return NextResponse.json(
-      { error: "Failed to process question" },
+      { error: `Failed to process question: ${message}` },
       { status: 500 }
     );
   }
@@ -108,4 +137,3 @@ export async function OPTIONS() {
     },
   });
 }
-
