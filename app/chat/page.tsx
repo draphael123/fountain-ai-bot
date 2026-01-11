@@ -6,7 +6,7 @@ import Image from "next/image";
 import { 
   ArrowLeft, FileText, Send, Loader2, Copy, Check, Eye, EyeOff, 
   RotateCcw, ThumbsUp, ThumbsDown, Download, Clock, MessageSquare,
-  Sparkles, X, ChevronRight
+  Sparkles, X, ChevronRight, Bookmark, BookmarkCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,6 +17,11 @@ import { StrictModeToggle } from "@/components/StrictModeToggle";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ExtensionBanner } from "@/components/ExtensionBanner";
 import { FeedbackButton } from "@/components/FeedbackModal";
+import { KeyboardShortcutsButton } from "@/components/KeyboardShortcutsModal";
+import { BookmarksSidebar, useBookmarks } from "@/components/BookmarksSidebar";
+import { ScrollToTop } from "@/components/ScrollToTop";
+import { SuggestedQuestions } from "@/components/SuggestedQuestions";
+import { ReadingTime } from "@/components/ReadingTime";
 import { getPHIWarning } from "@/lib/compliance/phi-detector";
 import { getEscalationWarning } from "@/lib/compliance/escalation-detector";
 import { cn } from "@/lib/utils";
@@ -76,9 +81,14 @@ export default function ChatPage() {
   const [escalation, setEscalation] = useState<{show: boolean; categories: string[]; message: string}>({
     show: false, categories: [], message: ""
   });
+  const [showBookmarks, setShowBookmarks] = useState(false);
+  const [charCount, setCharCount] = useState(0);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  
+  // Bookmarks hook
+  const { bookmarks, addBookmark, removeBookmark, isBookmarked, getBookmarkId } = useBookmarks();
 
   // Fetch sources info including Google Doc URL
   useEffect(() => {
@@ -151,18 +161,31 @@ export default function ChatPage() {
         e.preventDefault();
         inputRef.current?.focus();
       }
-      // Escape to clear input or close history
+      // Cmd/Ctrl + B to toggle bookmarks
+      if ((e.metaKey || e.ctrlKey) && e.key === "b") {
+        e.preventDefault();
+        setShowBookmarks(prev => !prev);
+      }
+      // Cmd/Ctrl + E to export
+      if ((e.metaKey || e.ctrlKey) && e.key === "e" && messages.length > 0) {
+        e.preventDefault();
+        handleExport();
+      }
+      // Escape to clear input or close sidebars
       if (e.key === "Escape") {
-        if (showHistory) {
+        if (showBookmarks) {
+          setShowBookmarks(false);
+        } else if (showHistory) {
           setShowHistory(false);
         } else if (input) {
           setInput("");
+          setCharCount(0);
         }
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [input, showHistory]);
+  }, [input, showHistory, showBookmarks, messages.length]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -311,7 +334,27 @@ export default function ChatPage() {
 
   const handleExampleClick = (question: string) => {
     setInput(question);
+    setCharCount(question.length);
     inputRef.current?.focus();
+  };
+
+  const handleBookmarkToggle = (messageId: string, question: string, answer: string) => {
+    if (isBookmarked(question)) {
+      const id = getBookmarkId(question);
+      if (id) removeBookmark(id);
+    } else {
+      addBookmark(question, answer);
+    }
+  };
+
+  const getLastUserQuestion = (messageId: string): string => {
+    const messageIndex = messages.findIndex(m => m.id === messageId);
+    for (let i = messageIndex - 1; i >= 0; i--) {
+      if (messages[i].role === "user") {
+        return messages[i].content;
+      }
+    }
+    return "";
   };
 
   const formatTime = (date: Date) => {
