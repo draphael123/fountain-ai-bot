@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, FileText, RefreshCw, Loader2, CheckCircle, XCircle, Database, MessageSquare } from "lucide-react";
+import { ArrowLeft, FileText, RefreshCw, Loader2, CheckCircle, XCircle, Database, MessageSquare, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -74,20 +74,24 @@ export default function SourcesPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background relative">
+      {/* Background decoration */}
+      <div className="fixed inset-0 bg-gradient-mesh opacity-30 pointer-events-none" />
+      
       {/* Header */}
-      <header className="bg-card border-b border-border">
-        <div className="max-w-4xl mx-auto px-6 py-4">
+      <header className="relative bg-card/80 backdrop-blur-lg border-b border-border">
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-cyan-500/5 to-green-500/5" />
+        <div className="relative max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href="/">
-                <Button variant="ghost" size="sm" className="gap-2">
+                <Button variant="ghost" size="sm" className="gap-2 hover:bg-purple-500/10 hover:text-purple-600 dark:hover:text-purple-400">
                   <ArrowLeft className="h-4 w-4" />
                   Back
                 </Button>
               </Link>
               <div>
-                <h1 className="text-lg font-semibold text-foreground">
+                <h1 className="text-lg font-semibold gradient-text">
                   Document Sources
                 </h1>
                 <p className="text-sm text-muted-foreground">
@@ -99,7 +103,7 @@ export default function SourcesPage() {
             <div className="flex items-center gap-2">
               <ThemeToggle />
               <Link href="/chat">
-                <Button size="sm" className="gap-2">
+                <Button size="sm" className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg shadow-purple-500/25">
                   <MessageSquare className="h-4 w-4" />
                   Go to Chat
                 </Button>
@@ -109,29 +113,37 @@ export default function SourcesPage() {
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto px-6 py-8 space-y-6">
+      <div className="relative max-w-4xl mx-auto px-6 py-8 space-y-6">
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-xl opacity-30 animate-pulse-soft" />
+              <Loader2 className="relative h-10 w-10 animate-spin text-purple-500" />
+            </div>
           </div>
         ) : error ? (
-          <Card className="border-destructive/50 bg-destructive/10">
+          <Card className="border-0 bg-gradient-to-br from-red-500/10 to-orange-500/10 shadow-lg">
             <CardContent className="py-6">
-              <div className="flex items-center gap-3 text-destructive">
+              <div className="flex items-center gap-3 text-red-600 dark:text-red-400">
                 <XCircle className="h-5 w-5" />
-                <p>{error}</p>
+                <p className="font-medium">{error}</p>
               </div>
             </CardContent>
           </Card>
         ) : (
           <>
             {/* Status Card */}
-            <Card className="animate-fade-in-up">
-              <CardHeader>
+            <Card className="animate-fade-in-up border-0 shadow-xl overflow-hidden">
+              <div className={`absolute inset-0 ${data?.ingested ? "bg-gradient-to-br from-green-500/5 to-cyan-500/5" : "bg-gradient-to-br from-amber-500/5 to-orange-500/5"}`} />
+              <CardHeader className="relative">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${data?.ingested ? "bg-green-100 dark:bg-green-900/30" : "bg-amber-100 dark:bg-amber-900/30"}`}>
-                      <Database className={`h-5 w-5 ${data?.ingested ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"}`} />
+                    <div className={`p-3 rounded-xl shadow-lg ${
+                      data?.ingested 
+                        ? "bg-gradient-to-br from-green-500 to-cyan-500 shadow-green-500/30" 
+                        : "bg-gradient-to-br from-amber-500 to-orange-500 shadow-amber-500/30"
+                    }`}>
+                      <Database className="h-6 w-6 text-white" />
                     </div>
                     <div>
                       <CardTitle>Document Status</CardTitle>
@@ -142,29 +154,33 @@ export default function SourcesPage() {
                       </CardDescription>
                     </div>
                   </div>
-                  <Badge variant={data?.ingested ? "default" : "secondary"} className={data?.ingested ? "bg-green-600" : ""}>
-                    {data?.ingested ? "Ready" : "Not Ingested"}
+                  <Badge className={`${
+                    data?.ingested 
+                      ? "bg-gradient-to-r from-green-500 to-cyan-500 text-white shadow-lg shadow-green-500/30" 
+                      : "badge-orange"
+                  } px-4 py-1`}>
+                    {data?.ingested ? "✓ Ready" : "Not Ingested"}
                   </Badge>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="relative space-y-4">
                 {data?.ingested && (
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-muted rounded-lg p-3">
-                      <p className="text-sm text-muted-foreground">Chunks</p>
-                      <p className="text-2xl font-semibold text-foreground">{data.chunkCount}</p>
+                    <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-xl p-4 shadow-lg">
+                      <p className="text-sm text-muted-foreground mb-1">Chunks</p>
+                      <p className="text-3xl font-bold gradient-text">{data.chunkCount}</p>
                     </div>
-                    <div className="bg-muted rounded-lg p-3">
-                      <p className="text-sm text-muted-foreground">Sections</p>
-                      <p className="text-2xl font-semibold text-foreground">{data.sectionCount}</p>
+                    <div className="bg-gradient-to-br from-cyan-500/10 to-green-500/10 rounded-xl p-4 shadow-lg">
+                      <p className="text-sm text-muted-foreground mb-1">Sections</p>
+                      <p className="text-3xl font-bold text-cyan-600 dark:text-cyan-400">{data.sectionCount}</p>
                     </div>
-                    <div className="bg-muted rounded-lg p-3">
-                      <p className="text-sm text-muted-foreground">Total Tokens</p>
-                      <p className="text-2xl font-semibold text-foreground">{data.totalTokens.toLocaleString()}</p>
+                    <div className="bg-gradient-to-br from-orange-500/10 to-yellow-500/10 rounded-xl p-4 shadow-lg">
+                      <p className="text-sm text-muted-foreground mb-1">Total Tokens</p>
+                      <p className="text-3xl font-bold text-orange-600 dark:text-orange-400">{data.totalTokens.toLocaleString()}</p>
                     </div>
-                    <div className="bg-muted rounded-lg p-3">
-                      <p className="text-sm text-muted-foreground">Ingested</p>
-                      <p className="text-sm font-medium text-foreground">{formatDate(data.ingestedAt)}</p>
+                    <div className="bg-gradient-to-br from-pink-500/10 to-rose-500/10 rounded-xl p-4 shadow-lg">
+                      <p className="text-sm text-muted-foreground mb-1">Ingested</p>
+                      <p className="text-sm font-semibold text-pink-600 dark:text-pink-400">{formatDate(data.ingestedAt)}</p>
                     </div>
                   </div>
                 )}
@@ -230,20 +246,27 @@ export default function SourcesPage() {
 
             {/* Sections List */}
             {data?.ingested && data.headings.length > 0 && (
-              <Card className="animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-                <CardHeader>
-                  <CardTitle className="text-base">Document Sections</CardTitle>
+              <Card className="animate-fade-in-up border-0 shadow-xl overflow-hidden" style={{ animationDelay: "0.2s" }}>
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-cyan-500/5" />
+                <CardHeader className="relative">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-5 w-5 icon-purple" />
+                    <CardTitle className="text-base gradient-text">Document Sections</CardTitle>
+                  </div>
                   <CardDescription>
                     {data.headings.length} unique sections found in the document
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="relative">
                   <div className="flex flex-wrap gap-2">
-                    {data.headings.map((heading, i) => (
-                      <Badge key={i} variant="secondary" className="text-xs">
-                        {heading}
-                      </Badge>
-                    ))}
+                    {data.headings.map((heading, i) => {
+                      const colors = ["badge-purple", "badge-pink", "badge-cyan", "badge-orange", "badge-green", "badge-yellow"];
+                      return (
+                        <Badge key={i} className={`${colors[i % colors.length]} text-xs px-3 py-1 font-medium`}>
+                          {heading}
+                        </Badge>
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>
@@ -251,41 +274,45 @@ export default function SourcesPage() {
 
             {/* Instructions */}
             {!data?.ingested && (
-              <Card className="animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-                <CardHeader>
-                  <CardTitle className="text-base">Getting Started</CardTitle>
+              <Card className="animate-fade-in-up border-0 shadow-xl overflow-hidden" style={{ animationDelay: "0.1s" }}>
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-cyan-500/5" />
+                <CardHeader className="relative">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-5 w-5 icon-purple" />
+                    <CardTitle className="text-base gradient-text">Getting Started</CardTitle>
+                  </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <div className="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-medium">
+                <CardContent className="relative space-y-4">
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-4 p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-pink-500/10">
+                      <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 text-white flex items-center justify-center text-sm font-bold shadow-lg shadow-purple-500/30">
                         1
                       </div>
                       <div>
-                        <p className="font-medium text-foreground">Place your document</p>
-                        <p className="text-sm text-muted-foreground">
-                          Copy your .docx file to the <code className="bg-muted px-1 rounded">data/</code> folder
+                        <p className="font-semibold text-foreground">Place your document</p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Copy your .docx file to the <code className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 px-2 py-0.5 rounded font-mono text-xs">data/</code> folder
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <div className="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-medium">
+                    <div className="flex items-start gap-4 p-4 rounded-xl bg-gradient-to-r from-cyan-500/10 to-green-500/10">
+                      <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-cyan-500 to-green-500 text-white flex items-center justify-center text-sm font-bold shadow-lg shadow-cyan-500/30">
                         2
                       </div>
                       <div>
-                        <p className="font-medium text-foreground">Run ingestion</p>
-                        <p className="text-sm text-muted-foreground">
-                          Run <code className="bg-muted px-1 rounded">npm run ingest</code> or click the Re-ingest button above
+                        <p className="font-semibold text-foreground">Run ingestion</p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Run <code className="bg-gradient-to-r from-cyan-500/10 to-green-500/10 px-2 py-0.5 rounded font-mono text-xs">npm run ingest</code> or click the Re-ingest button above
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <div className="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-medium">
+                    <div className="flex items-start gap-4 p-4 rounded-xl bg-gradient-to-r from-orange-500/10 to-yellow-500/10">
+                      <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-orange-500 to-yellow-500 text-white flex items-center justify-center text-sm font-bold shadow-lg shadow-orange-500/30">
                         3
                       </div>
                       <div>
-                        <p className="font-medium text-foreground">Start asking questions</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="font-semibold text-foreground">Start asking questions</p>
+                        <p className="text-sm text-muted-foreground mt-1">
                           Go to the Chat page and ask questions about your document
                         </p>
                       </div>

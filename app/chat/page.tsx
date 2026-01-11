@@ -364,34 +364,41 @@ export default function ChatPage() {
   const lastAssistantMessage = messages.filter((m) => m.role === "assistant").pop();
 
   return (
-    <div className="min-h-screen bg-background pb-48">
+    <div className="min-h-screen bg-background pb-48 relative">
+      {/* Background decoration */}
+      <div className="fixed inset-0 bg-gradient-mesh opacity-30 pointer-events-none" />
+      
       {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-6 py-4">
+      <header className="bg-card/80 backdrop-blur-lg border-b border-border sticky top-0 z-10">
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-pink-500/5 to-cyan-500/5" />
+        <div className="relative max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href="/">
-                <Button variant="ghost" size="sm" className="gap-2">
+                <Button variant="ghost" size="sm" className="gap-2 hover:bg-purple-500/10 hover:text-purple-600 dark:hover:text-purple-400">
                   <ArrowLeft className="h-4 w-4" />
                   Back
                 </Button>
               </Link>
-              <Image 
-                src="/logo.png" 
-                alt="Logo" 
-                width={40} 
-                height={40}
-                className="rounded-lg"
-              />
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg blur opacity-30" />
+                <Image 
+                  src="/logo.png" 
+                  alt="Logo" 
+                  width={40} 
+                  height={40}
+                  className="relative rounded-lg"
+                />
+              </div>
               <div>
-                <h1 className="text-lg font-semibold text-foreground">Fountain Workflows Q&A</h1>
+                <h1 className="text-lg font-semibold gradient-text">Fountain Workflows Q&A</h1>
                 <p className="text-sm text-muted-foreground">Ask questions about internal procedures</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <ThemeToggle />
               <Link href="/sources">
-                <Button variant="outline" size="sm" className="gap-2">
+                <Button variant="outline" size="sm" className="gap-2 hover:bg-cyan-500/10 hover:border-cyan-500/50 hover:text-cyan-600 dark:hover:text-cyan-400">
                   <FileText className="h-4 w-4" />
                   Sources
                 </Button>
@@ -469,30 +476,40 @@ export default function ChatPage() {
         <div className="space-y-6">
           {messages.length === 0 && (
             <div className="text-center py-12 animate-fade-in">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-                <MessageSquare className="h-8 w-8 text-primary" />
+              <div className="relative inline-flex items-center justify-center w-20 h-20 mb-6">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 rounded-full blur-xl opacity-40 animate-pulse-soft" />
+                <div className="relative w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
+                  <MessageSquare className="h-10 w-10 text-white" />
+                </div>
               </div>
-              <p className="text-foreground text-lg font-medium">Ask a question about Fountain workflows</p>
+              <p className="text-foreground text-xl font-semibold gradient-text">Ask a question about Fountain workflows</p>
               <p className="text-muted-foreground text-sm mt-2 mb-8">
                 Your question will be answered using only the official documentation
               </p>
               
               {/* Example Questions */}
-              <div className="max-w-md mx-auto">
-                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-3 flex items-center justify-center gap-2">
-                  <Sparkles className="h-3 w-3" />
+              <div className="max-w-lg mx-auto">
+                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-4 flex items-center justify-center gap-2">
+                  <Sparkles className="h-3 w-3 icon-purple" />
                   Try asking
                 </p>
-                <div className="flex flex-wrap justify-center gap-2">
-                  {EXAMPLE_QUESTIONS.slice(0, 3).map((q, i) => (
-                    <button
-                      key={i}
-                      onClick={() => handleExampleClick(q)}
-                      className="px-3 py-2 text-sm bg-secondary hover:bg-secondary/80 text-secondary-foreground rounded-full transition-all hover:scale-105"
-                    >
-                      {q}
-                    </button>
-                  ))}
+                <div className="flex flex-wrap justify-center gap-3">
+                  {EXAMPLE_QUESTIONS.slice(0, 3).map((q, i) => {
+                    const colors = [
+                      "from-purple-500/10 to-pink-500/10 hover:from-purple-500/20 hover:to-pink-500/20 border-purple-500/20 hover:border-purple-500/40",
+                      "from-cyan-500/10 to-green-500/10 hover:from-cyan-500/20 hover:to-green-500/20 border-cyan-500/20 hover:border-cyan-500/40",
+                      "from-orange-500/10 to-yellow-500/10 hover:from-orange-500/20 hover:to-yellow-500/20 border-orange-500/20 hover:border-orange-500/40"
+                    ];
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => handleExampleClick(q)}
+                        className={`px-4 py-2.5 text-sm bg-gradient-to-r ${colors[i]} text-foreground rounded-full border transition-all hover:scale-105 hover:shadow-lg`}
+                      >
+                        {q}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -508,7 +525,7 @@ export default function ChatPage() {
             >
               {message.role === "user" ? (
                 <div className="max-w-[80%]">
-                  <div className="bg-primary text-primary-foreground px-4 py-3 rounded-2xl rounded-br-md shadow-sm">
+                  <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-3 rounded-2xl rounded-br-md shadow-lg shadow-purple-500/20">
                     <p className="whitespace-pre-wrap">{message.content}</p>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1 text-right">
@@ -517,7 +534,7 @@ export default function ChatPage() {
                 </div>
               ) : (
                 <div className="space-y-4 w-full">
-                  <div className="bg-card border border-border rounded-lg p-4 shadow-sm">
+                  <div className="bg-card border-0 rounded-xl p-4 shadow-lg relative overflow-hidden">
                     {message.content ? (
                       <>
                         <p className="whitespace-pre-wrap leading-relaxed text-foreground">
@@ -626,11 +643,12 @@ export default function ChatPage() {
       </div>
 
       {/* Fixed Input at Bottom */}
-      <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border p-4 shadow-lg">
-        <div className="max-w-4xl mx-auto">
+      <div className="fixed bottom-0 left-0 right-0 bg-card/80 backdrop-blur-lg border-t border-border p-4 shadow-2xl">
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-pink-500/5 to-cyan-500/5" />
+        <div className="relative max-w-4xl mx-auto">
           {/* Warnings */}
           {phiWarning && (
-            <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 text-sm p-3 rounded-lg mb-3 animate-fade-in">
+            <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950 dark:to-orange-950 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 text-sm p-3 rounded-xl mb-3 animate-fade-in shadow-lg">
               ⚠️ {phiWarning}
             </div>
           )}
@@ -647,30 +665,37 @@ export default function ChatPage() {
           {/* Input Form */}
           <form onSubmit={handleSubmit}>
             <div className="flex gap-3">
-              <Textarea
-                ref={inputRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask a question about workflows... (⌘K to focus)"
-                className="flex-1 min-h-[50px] max-h-[120px] resize-none bg-background"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSubmit(e);
-                  }
-                }}
-                disabled={isLoading}
-              />
+              <div className="flex-1 relative">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 rounded-xl opacity-0 focus-within:opacity-30 blur transition-opacity" />
+                <Textarea
+                  ref={inputRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Ask a question about workflows... (⌘K to focus)"
+                  className="relative flex-1 min-h-[50px] max-h-[120px] resize-none bg-background rounded-xl border-2 focus:border-purple-500/50"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSubmit(e);
+                    }
+                  }}
+                  disabled={isLoading}
+                />
+              </div>
               <Button 
                 type="submit" 
                 disabled={!input.trim() || isLoading} 
-                className="px-6 h-[50px] btn-hover-lift"
+                className="px-6 h-[50px] btn-hover-lift bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg shadow-purple-500/25 rounded-xl"
               >
                 {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              Press Enter to send, Shift+Enter for new line • ⌘K to focus • Esc to clear
+            <p className="text-xs text-muted-foreground mt-2 flex items-center justify-center gap-2">
+              <span className="px-2 py-0.5 rounded badge-purple text-xs">Enter</span> to send
+              <span className="text-muted-foreground/50">•</span>
+              <span className="px-2 py-0.5 rounded badge-cyan text-xs">⌘K</span> to focus
+              <span className="text-muted-foreground/50">•</span>
+              <span className="px-2 py-0.5 rounded badge-pink text-xs">Esc</span> to clear
             </p>
           </form>
         </div>
