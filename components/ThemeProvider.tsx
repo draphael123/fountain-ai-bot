@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useMemo } from "react";
 
 type Theme = "light" | "dark" | "system";
 
@@ -57,12 +57,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("theme", newTheme);
   };
 
-  if (!mounted) {
-    return <>{children}</>;
-  }
+  const value = useMemo(() => ({
+    theme,
+    setTheme: handleSetTheme,
+    resolvedTheme,
+  }), [theme, resolvedTheme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme: handleSetTheme, resolvedTheme }}>
+    <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
   );
@@ -71,8 +73,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 export function useTheme() {
   const context = useContext(ThemeContext);
   if (context === undefined) {
-    throw new Error("useTheme must be used within a ThemeProvider");
+    // Return default values when not in provider (for SSR/SSG)
+    return {
+      theme: "system" as Theme,
+      setTheme: () => {},
+      resolvedTheme: "light" as const,
+    };
   }
   return context;
 }
-
