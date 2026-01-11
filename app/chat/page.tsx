@@ -15,6 +15,7 @@ import { CitationCard } from "@/components/chat/CitationCard";
 import { EscalationBanner } from "@/components/chat/EscalationBanner";
 import { StrictModeToggle } from "@/components/StrictModeToggle";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { ExtensionBanner } from "@/components/ExtensionBanner";
 import { getPHIWarning } from "@/lib/compliance/phi-detector";
 import { getEscalationWarning } from "@/lib/compliance/escalation-detector";
 import { cn } from "@/lib/utils";
@@ -318,6 +319,9 @@ export default function ChatPage() {
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-6 py-4">
+        {/* Extension Banner */}
+        <ExtensionBanner />
+
         {/* Controls */}
         <div className="flex items-center justify-between gap-4 pb-4 border-b border-border mb-6">
           <StrictModeToggle enabled={strictMode} onToggle={setStrictMode} />
