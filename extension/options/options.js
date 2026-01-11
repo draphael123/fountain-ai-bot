@@ -5,7 +5,7 @@ const saveBtn = document.getElementById("save-btn");
 const resetBtn = document.getElementById("reset-btn");
 const status = document.getElementById("status");
 
-const DEFAULT_API_URL = "http://localhost:3000";
+const DEFAULT_API_URL = "https://fountain-ai-bot.vercel.app";
 
 // Load settings
 async function loadSettings() {

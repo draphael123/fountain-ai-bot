@@ -20,7 +20,7 @@ const connectionStatus = document.getElementById("connection-status");
 const quickActions = document.getElementById("quick-actions");
 
 // State
-let apiUrl = "http://localhost:3000";
+let apiUrl = "https://fountain-ai-bot.vercel.app";
 let isLoading = false;
 let currentAnswer = "";
 let recentQuestions = [];
