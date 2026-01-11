@@ -67,29 +67,30 @@ export function CitationCard({
           </p>
           
           {/* Source link - Always visible */}
-          {googleDocUrl && (
-            <div className="flex items-center gap-3 mt-2">
+          <div className="flex items-center gap-2 mt-2 flex-wrap">
+            {googleDocUrl ? (
               <a
                 href={googleDocUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:text-primary/80 hover:underline transition-colors bg-primary/5 px-2 py-1 rounded"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-white bg-primary hover:bg-primary/90 px-3 py-1.5 rounded-md transition-colors shadow-sm"
               >
                 <ExternalLink className="h-3 w-3" />
-                View Source
+                Open Source Document
               </a>
-              <span className="text-xs text-muted-foreground">
-                {sourcePath}
+            ) : (
+              <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+                <FileText className="h-3 w-3" />
+                Source: {sourcePath}
               </span>
-            </div>
-          )}
-          {!googleDocUrl && sourcePath && (
-            <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
-              <FileText className="h-3 w-3" />
-              {sourcePath}
-            </p>
-          )}
+            )}
+            {googleDocUrl && sourcePath && (
+              <span className="text-xs text-muted-foreground">
+                from {sourcePath}
+              </span>
+            )}
+          </div>
         </div>
         
         <div className="flex items-center gap-1 flex-shrink-0">

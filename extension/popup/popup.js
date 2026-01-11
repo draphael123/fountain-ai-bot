@@ -580,18 +580,26 @@ function showCitations(citations) {
   
   citationsList.innerHTML = citations.map((c, i) => {
     const scoreClass = c.score > 0.8 ? "score-high" : c.score > 0.6 ? "score-medium" : "score-low";
-    const sourceInfo = googleDocUrl ? `
+    const sourceButton = googleDocUrl ? `
       <div class="citation-source">
-        <a href="${googleDocUrl}" target="_blank" rel="noopener noreferrer" class="citation-source-link" onclick="event.stopPropagation()">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <a href="${googleDocUrl}" target="_blank" rel="noopener noreferrer" class="citation-source-btn" onclick="event.stopPropagation()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
             <polyline points="15 3 21 3 21 9"/>
             <line x1="10" x2="21" y1="14" y2="3"/>
           </svg>
-          View Source Document
+          Click to Open Source Document
         </a>
       </div>
-    ` : '';
+    ` : `
+      <div class="citation-source-info">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+        </svg>
+        <span>Source: Fountain Workflows Document</span>
+      </div>
+    `;
     return `
       <div class="citation-item">
         <div class="citation-header">
@@ -606,7 +614,7 @@ function showCitations(citations) {
           </button>
         </div>
         <p class="citation-excerpt">${escapeHtml(c.excerpt)}</p>
-        ${sourceInfo}
+        ${sourceButton}
       </div>
     `;
   }).join("");
