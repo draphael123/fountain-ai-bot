@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { CitationCard } from "@/components/chat/CitationCard";
 import { EscalationBanner } from "@/components/chat/EscalationBanner";
 import { StrictModeToggle } from "@/components/StrictModeToggle";
+import { PatientResponseToggle } from "@/components/PatientResponseToggle";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ExtensionBanner } from "@/components/ExtensionBanner";
 import { FeedbackButton } from "@/components/FeedbackModal";
@@ -72,6 +73,7 @@ export default function ChatPage() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [strictMode, setStrictMode] = useState(true);
+  const [patientResponse, setPatientResponse] = useState(false);
   const [showContext, setShowContext] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
   const [phiWarning, setPHIWarning] = useState<string | null>(null);
@@ -217,7 +219,7 @@ export default function ChatPage() {
       const response = await fetch("/api/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question, strict: strictMode, topK: 5 }),
+        body: JSON.stringify({ question, strict: strictMode, patientResponse, topK: 5 }),
       });
 
       if (!response.ok) {
@@ -414,8 +416,11 @@ export default function ChatPage() {
         <ExtensionBanner />
 
         {/* Controls */}
-        <div className="flex items-center justify-between gap-4 pb-4 border-b border-border mb-6">
-          <StrictModeToggle enabled={strictMode} onToggle={setStrictMode} />
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-border mb-6">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <StrictModeToggle enabled={strictMode} onToggle={setStrictMode} />
+            <PatientResponseToggle enabled={patientResponse} onToggle={setPatientResponse} />
+          </div>
           <div className="flex items-center gap-2">
             <Button 
               variant="ghost" 

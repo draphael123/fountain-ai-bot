@@ -139,7 +139,62 @@ body {
   color: var(--warning-text);
 }
 
-/* Strict Mode */
+/* Mode Toggles Container */
+.mode-toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Mode Toggle */
+.mode-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: var(--muted);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+
+.mode-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--card-foreground);
+}
+
+.mode-toggle-label svg {
+  color: var(--primary);
+}
+
+/* Patient Mode specific styles */
+.mode-toggle.patient-mode .mode-toggle-label svg {
+  color: #ec4899;
+}
+
+.mode-toggle.patient-mode:has(input:checked) {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(244, 63, 94, 0.1));
+  border-color: rgba(236, 72, 153, 0.3);
+}
+
+.mode-toggle.patient-mode:has(input:checked) .mode-toggle-label {
+  color: #be185d;
+}
+
+[data-theme="dark"] .mode-toggle.patient-mode:has(input:checked) .mode-toggle-label {
+  color: #f9a8d4;
+}
+
+/* Pink toggle variant */
+.toggle-pink input:checked + .toggle-slider {
+  background: linear-gradient(135deg, #ec4899, #f43f5e);
+}
+
+/* Legacy: keep old class for backwards compatibility */
 .strict-mode {
   display: flex;
   align-items: center;

@@ -9,6 +9,7 @@ interface AskRequest {
   topK?: number;
   strict?: boolean;
   stream?: boolean;
+  patientResponse?: boolean;
 }
 
 export async function POST(request: NextRequest) {
@@ -59,6 +60,7 @@ export async function POST(request: NextRequest) {
     const options = {
       topK: body.topK ?? 5,
       strict: body.strict ?? true,
+      patientResponse: body.patientResponse ?? false,
     };
 
     // Always use streaming for better UX

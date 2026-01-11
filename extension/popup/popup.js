@@ -3,6 +3,7 @@ const questionInput = document.getElementById("question-input");
 const askBtn = document.getElementById("ask-btn");
 const settingsBtn = document.getElementById("settings-btn");
 const strictModeToggle = document.getElementById("strict-mode");
+const patientModeToggle = document.getElementById("patient-mode");
 const phiWarning = document.getElementById("phi-warning");
 const phiWarningText = document.getElementById("phi-warning-text");
 const escalationWarning = document.getElementById("escalation-warning");
@@ -454,6 +455,7 @@ async function handleAsk() {
       body: JSON.stringify({
         question,
         strict: strictModeToggle.checked,
+        patientResponse: patientModeToggle.checked,
         topK: settings.topK,
       }),
     });

@@ -64,9 +64,10 @@ export async function ask(
   options: {
     topK?: number;
     strict?: boolean;
+    patientResponse?: boolean;
   } = {}
 ): Promise<AskResult> {
-  const { topK = config.defaultTopK, strict = true } = options;
+  const { topK = config.defaultTopK, strict = true, patientResponse = false } = options;
 
   // Step 1: Search for relevant chunks
   const searchResults = await searchChunks(question, topK * 2);
@@ -78,10 +79,10 @@ export async function ask(
   // Step 3: Check if we have relevant results (score threshold)
   const hasRelevantResults = topResults.some((r) => r.score > 0.35);
 
-  // Step 4: Build prompt
+  // Step 4: Build prompt (with patient response mode if enabled)
   const prompt = hasRelevantResults
-    ? buildPrompt(question, topResults, strict)
-    : buildNotFoundPrompt(question, topResults);
+    ? buildPrompt(question, topResults, strict, patientResponse)
+    : buildNotFoundPrompt(question, topResults, patientResponse);
 
   // Step 5: Generate answer
   const answer = await generate({
@@ -107,11 +108,12 @@ export function askStream(
   options: {
     topK?: number;
     strict?: boolean;
+    patientResponse?: boolean;
   } = {}
 ): {
   stream: () => Promise<{ readable: ReadableStream; citations: Citation[]; retrieved: SearchResult[] }>;
 } {
-  const { topK = config.defaultTopK, strict = true } = options;
+  const { topK = config.defaultTopK, strict = true, patientResponse = false } = options;
 
   return {
     stream: async () => {
@@ -125,10 +127,10 @@ export function askStream(
       // Step 3: Check if we have relevant results
       const hasRelevantResults = topResults.some((r) => r.score > 0.35);
 
-      // Step 4: Build prompt
+      // Step 4: Build prompt (with patient response mode if enabled)
       const prompt = hasRelevantResults
-        ? buildPrompt(question, topResults, strict)
-        : buildNotFoundPrompt(question, topResults);
+        ? buildPrompt(question, topResults, strict, patientResponse)
+        : buildNotFoundPrompt(question, topResults, patientResponse);
 
       // Step 5: Create stream
       const readable = createStreamResponse({
