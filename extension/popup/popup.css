@@ -525,6 +525,36 @@ body {
   color: white;
 }
 
+/* Citation Source */
+.citation-source {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.citation-source-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--primary);
+  background: var(--primary-light);
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.citation-source-link:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.citation-source-link svg {
+  flex-shrink: 0;
+}
+
 .citation-copy-btn {
   background: none;
   border: none;
