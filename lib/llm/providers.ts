@@ -1,30 +1,4 @@
-import OpenAI from "openai";
-import Anthropic from "@anthropic-ai/sdk";
 import { config } from "@/lib/config";
-
-// Provider clients (lazy initialized)
-let openaiClient: OpenAI | null = null;
-let anthropicClient: Anthropic | null = null;
-
-function getOpenAI(): OpenAI {
-  if (!openaiClient) {
-    if (!config.openaiApiKey) {
-      throw new Error("OPENAI_API_KEY is required");
-    }
-    openaiClient = new OpenAI({ apiKey: config.openaiApiKey });
-  }
-  return openaiClient;
-}
-
-function getAnthropic(): Anthropic {
-  if (!anthropicClient) {
-    if (!config.anthropicApiKey) {
-      throw new Error("ANTHROPIC_API_KEY is required");
-    }
-    anthropicClient = new Anthropic({ apiKey: config.anthropicApiKey });
-  }
-  return anthropicClient;
-}
 
 export interface GenerateOptions {
   system: string;
@@ -38,87 +12,103 @@ export interface StreamGenerateOptions extends GenerateOptions {
 }
 
 /**
- * Generate a non-streaming response
+ * Generate a non-streaming response using direct fetch
  */
 export async function generate(options: GenerateOptions): Promise<string> {
   const { system, user, maxTokens = 2048 } = options;
 
-  if (config.llmProvider === "anthropic") {
-    const client = getAnthropic();
-    const response = await client.messages.create({
-      model: config.anthropicModel,
-      max_tokens: maxTokens,
-      system,
-      messages: [{ role: "user", content: user }],
-    });
+  if (!config.openaiApiKey) {
+    throw new Error("OPENAI_API_KEY is required");
+  }
 
-    const textBlock = response.content.find((block) => block.type === "text");
-    return textBlock ? textBlock.text : "";
-  } else {
-    const client = getOpenAI();
-    const response = await client.chat.completions.create({
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${config.openaiApiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
       model: config.openaiModel,
       max_tokens: maxTokens,
       messages: [
         { role: "system", content: system },
         { role: "user", content: user },
       ],
-    });
+    }),
+  });
 
-    return response.choices[0]?.message?.content || "";
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
   }
+
+  const data = await response.json();
+  return data.choices[0]?.message?.content || "";
 }
 
 /**
- * Generate a streaming response
+ * Generate a streaming response using direct fetch
  */
-export async function generateStream(
-  options: StreamGenerateOptions
-): Promise<void> {
+export async function generateStream(options: StreamGenerateOptions): Promise<void> {
   const { system, user, maxTokens = 2048, onChunk, onDone } = options;
 
-  if (config.llmProvider === "anthropic") {
-    const client = getAnthropic();
+  if (!config.openaiApiKey) {
+    throw new Error("OPENAI_API_KEY is required");
+  }
 
-    const stream = await client.messages.stream({
-      model: config.anthropicModel,
-      max_tokens: maxTokens,
-      system,
-      messages: [{ role: "user", content: user }],
-    });
-
-    for await (const event of stream) {
-      if (
-        event.type === "content_block_delta" &&
-        event.delta.type === "text_delta"
-      ) {
-        onChunk(event.delta.text);
-      }
-    }
-
-    onDone();
-  } else {
-    const client = getOpenAI();
-
-    const stream = await client.chat.completions.create({
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${config.openaiApiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
       model: config.openaiModel,
       max_tokens: maxTokens,
+      stream: true,
       messages: [
         { role: "system", content: system },
         { role: "user", content: user },
       ],
-      stream: true,
-    });
+    }),
+  });
 
-    for await (const chunk of stream) {
-      const content = chunk.choices[0]?.delta?.content;
-      if (content) {
-        onChunk(content);
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
+  }
+
+  const reader = response.body?.getReader();
+  if (!reader) throw new Error("No response body");
+
+  const decoder = new TextDecoder();
+  
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    const chunk = decoder.decode(value, { stream: true });
+    const lines = chunk.split("\n").filter(line => line.trim() !== "");
+    
+    for (const line of lines) {
+      if (line.startsWith("data: ")) {
+        const data = line.slice(6);
+        if (data === "[DONE]") continue;
+        
+        try {
+          const parsed = JSON.parse(data);
+          const content = parsed.choices[0]?.delta?.content;
+          if (content) {
+            onChunk(content);
+          }
+        } catch (e) {
+          // Skip invalid JSON lines
+        }
       }
     }
-
-    onDone();
   }
+
+  onDone();
 }
 
 /**
@@ -132,41 +122,58 @@ export function createStreamResponse(options: GenerateOptions): ReadableStream {
       const encoder = new TextEncoder();
 
       try {
-        if (config.llmProvider === "anthropic") {
-          const client = getAnthropic();
+        if (!config.openaiApiKey) {
+          throw new Error("OPENAI_API_KEY is required");
+        }
 
-          const stream = await client.messages.stream({
-            model: config.anthropicModel,
-            max_tokens: maxTokens,
-            system,
-            messages: [{ role: "user", content: user }],
-          });
-
-          for await (const event of stream) {
-            if (
-              event.type === "content_block_delta" &&
-              event.delta.type === "text_delta"
-            ) {
-              controller.enqueue(encoder.encode(event.delta.text));
-            }
-          }
-        } else {
-          const client = getOpenAI();
-
-          const stream = await client.chat.completions.create({
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${config.openaiApiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
             model: config.openaiModel,
             max_tokens: maxTokens,
+            stream: true,
             messages: [
               { role: "system", content: system },
               { role: "user", content: user },
             ],
-            stream: true,
-          });
+          }),
+        });
 
-          for await (const chunk of stream) {
-            const content = chunk.choices[0]?.delta?.content;
-            if (content) {
-              controller.enqueue(encoder.encode(content));
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
+        }
+
+        const reader = response.body?.getReader();
+        if (!reader) throw new Error("No response body");
+
+        const decoder = new TextDecoder();
+        
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split("\n").filter(line => line.trim() !== "");
+          
+          for (const line of lines) {
+            if (line.startsWith("data: ")) {
+              const data = line.slice(6);
+              if (data === "[DONE]") continue;
+              
+              try {
+                const parsed = JSON.parse(data);
+                const content = parsed.choices[0]?.delta?.content;
+                if (content) {
+                  controller.enqueue(encoder.encode(content));
+                }
+              } catch (e) {
+                // Skip invalid JSON lines
+              }
             }
           }
         }
@@ -178,4 +185,3 @@ export function createStreamResponse(options: GenerateOptions): ReadableStream {
     },
   });
 }
-

@@ -1,54 +1,71 @@
-import OpenAI from "openai";
 import { config } from "@/lib/config";
 
-// OpenAI client singleton
-let openaiClient: OpenAI | null = null;
-
-function getOpenAI(): OpenAI {
-  if (!openaiClient) {
-    if (!config.openaiApiKey) {
-      throw new Error("OPENAI_API_KEY is required for embeddings");
-    }
-    openaiClient = new OpenAI({ apiKey: config.openaiApiKey });
-  }
-  return openaiClient;
-}
-
 /**
- * Generate embedding for a single text
+ * Generate embedding for a single text using direct fetch
  */
 export async function embedText(text: string): Promise<number[]> {
-  const openai = getOpenAI();
-  
-  const response = await openai.embeddings.create({
-    model: config.openaiEmbeddingModel,
-    input: text,
+  if (!config.openaiApiKey) {
+    throw new Error("OPENAI_API_KEY is required for embeddings");
+  }
+
+  const response = await fetch("https://api.openai.com/v1/embeddings", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${config.openaiApiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: config.openaiEmbeddingModel,
+      input: text,
+    }),
   });
 
-  return response.data[0].embedding;
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
+  }
+
+  const data = await response.json();
+  return data.data[0].embedding;
 }
 
 /**
- * Generate embeddings for multiple texts (batched)
+ * Generate embeddings for multiple texts (batched) using direct fetch
  */
 export async function embedTexts(texts: string[]): Promise<number[][]> {
   if (texts.length === 0) return [];
   
-  const openai = getOpenAI();
+  if (!config.openaiApiKey) {
+    throw new Error("OPENAI_API_KEY is required for embeddings");
+  }
+
   const batchSize = 100; // OpenAI limit
   const allEmbeddings: number[][] = [];
 
   for (let i = 0; i < texts.length; i += batchSize) {
     const batch = texts.slice(i, i + batchSize);
     
-    const response = await openai.embeddings.create({
-      model: config.openaiEmbeddingModel,
-      input: batch,
+    const response = await fetch("https://api.openai.com/v1/embeddings", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${config.openaiApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: config.openaiEmbeddingModel,
+        input: batch,
+      }),
     });
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
+    }
+
+    const data = await response.json();
     // Sort by index to maintain order
-    const sorted = response.data.sort((a, b) => a.index - b.index);
-    allEmbeddings.push(...sorted.map((d) => d.embedding));
+    const sorted = data.data.sort((a: {index: number}, b: {index: number}) => a.index - b.index);
+    allEmbeddings.push(...sorted.map((d: {embedding: number[]}) => d.embedding));
   }
 
   return allEmbeddings;
@@ -76,4 +93,3 @@ export function cosineSimilarity(a: number[], b: number[]): number {
 
   return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
 }
-
