@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, FileText, Shield, MessageSquare, AlertTriangle, Sparkles } from "lucide-react";
+import { ArrowRight, FileText, Shield, MessageSquare, AlertTriangle, Sparkles, Chrome, Download, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function HomePage() {
@@ -124,6 +124,81 @@ export default function HomePage() {
             </CardHeader>
           </Card>
         </div>
+      </div>
+
+      {/* Chrome Extension Section */}
+      <div className="max-w-4xl mx-auto px-6 pb-16">
+        <Card className="border-border bg-card overflow-hidden animate-fade-in-up" style={{ animationDelay: "0.85s" }}>
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10 border-b border-border">
+            <div className="flex items-center gap-4">
+              <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Chrome className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-xl text-foreground">Chrome Extension</CardTitle>
+                <CardDescription>
+                  Access Fountain Workflows from anywhere in your browser
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <h3 className="font-semibold text-foreground">Features</h3>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Quick access from any webpage
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Same powerful Q&A functionality
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    PHI detection & escalation warnings
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    Keyboard shortcuts for quick access
+                  </li>
+                </ul>
+              </div>
+              <div className="space-y-4">
+                <h3 className="font-semibold text-foreground">Installation</h3>
+                <ol className="space-y-2 text-sm text-muted-foreground list-decimal list-inside">
+                  <li>Download the extension from GitHub</li>
+                  <li>Open <code className="bg-muted px-1.5 py-0.5 rounded text-xs">chrome://extensions</code></li>
+                  <li>Enable &quot;Developer mode&quot; (top right)</li>
+                  <li>Click &quot;Load unpacked&quot; and select the extension folder</li>
+                </ol>
+                <div className="flex gap-3 pt-2">
+                  <a 
+                    href="https://github.com/draphael123/fountain-ai-bot/tree/main/extension" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    <Button variant="default" size="sm" className="gap-2">
+                      <Download className="h-4 w-4" />
+                      Download Extension
+                    </Button>
+                  </a>
+                  <a 
+                    href="https://github.com/draphael123/fountain-ai-bot" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <ExternalLink className="h-4 w-4" />
+                      View on GitHub
+                    </Button>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* How It Works */}
