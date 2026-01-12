@@ -7,7 +7,7 @@ import {
   Sparkles, HelpCircle, ExternalLink
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/components/ThemeProvider";
 
 interface Command {
   id: string;
@@ -40,7 +40,8 @@ export function CommandPalette({
   const [search, setSearch] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   const commands: Command[] = [
     {
@@ -88,10 +89,10 @@ export function CommandPalette({
     },
     {
       id: "toggle-theme",
-      label: theme === "dark" ? "Light Mode" : "Dark Mode",
+      label: isDark ? "Light Mode" : "Dark Mode",
       description: "Switch color theme",
-      icon: theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />,
-      action: () => { setTheme(theme === "dark" ? "light" : "dark"); setIsOpen(false); },
+      icon: isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />,
+      action: () => { setTheme(isDark ? "light" : "dark"); setIsOpen(false); },
       category: "settings",
     },
     {

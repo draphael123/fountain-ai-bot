@@ -819,9 +819,7 @@ export default function ChatPage() {
       <BookmarksSidebar
         isOpen={showBookmarks}
         onClose={() => setShowBookmarks(false)}
-        bookmarks={bookmarks}
-        onRemove={removeBookmark}
-        onSelect={(q) => handleExampleClick(q)}
+        onSelectBookmark={(q) => handleExampleClick(q)}
       />
     </div>
   );
