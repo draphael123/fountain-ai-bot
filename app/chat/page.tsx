@@ -6,7 +6,7 @@ import Image from "next/image";
 import { 
   ArrowLeft, FileText, Send, Loader2, Copy, Check, Eye, EyeOff, 
   RotateCcw, ThumbsUp, ThumbsDown, Download, Clock, MessageSquare,
-  Sparkles, X, ChevronRight, Bookmark, BookmarkCheck
+  Sparkles, X, ChevronRight, Bookmark, BookmarkCheck, FileDown
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,6 +23,10 @@ import { BookmarksSidebar, useBookmarks } from "@/components/BookmarksSidebar";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { SuggestedQuestions } from "@/components/SuggestedQuestions";
 import { ReadingTime } from "@/components/ReadingTime";
+import { VoiceInput } from "@/components/VoiceInput";
+import { CommandPalette } from "@/components/CommandPalette";
+import { OnboardingTour, RestartTourButton } from "@/components/OnboardingTour";
+import { QuickFAQs } from "@/components/QuickFAQs";
 import { getPHIWarning } from "@/lib/compliance/phi-detector";
 import { getEscalationWarning } from "@/lib/compliance/escalation-detector";
 import { cn } from "@/lib/utils";
@@ -316,22 +320,97 @@ export default function ChatPage() {
     );
   };
 
-  const handleExport = () => {
+  const handleExport = (format: "txt" | "html" = "txt") => {
+    if (format === "html") {
+      // Export as styled HTML (can be opened in browser or printed as PDF)
+      const html = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fountain AI Chat Export - ${new Date().toLocaleDateString()}</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 40px 20px; background: #f8f9fa; }
+    h1 { color: #1a1a1a; margin-bottom: 8px; }
+    .subtitle { color: #666; margin-bottom: 32px; font-size: 14px; }
+    .message { margin-bottom: 24px; }
+    .user { text-align: right; }
+    .user .bubble { background: linear-gradient(135deg, #a855f7, #ec4899); color: white; display: inline-block; padding: 12px 16px; border-radius: 16px 16px 4px 16px; max-width: 80%; text-align: left; }
+    .assistant .bubble { background: white; border: 1px solid #e5e7eb; padding: 16px; border-radius: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .time { font-size: 12px; color: #999; margin-top: 4px; }
+    .citation { background: #f3f4f6; border-left: 3px solid #a855f7; padding: 12px; margin-top: 12px; border-radius: 4px; font-size: 14px; }
+    .citation-title { font-weight: 600; color: #374151; margin-bottom: 4px; }
+    .citation-text { color: #6b7280; }
+    @media print { body { background: white; } .assistant .bubble { box-shadow: none; } }
+  </style>
+</head>
+<body>
+  <h1>🌊 Fountain AI Chat Export</h1>
+  <p class="subtitle">Exported on ${new Date().toLocaleString()}</p>
+  ${messages.map(m => `
+  <div class="message ${m.role}">
+    <div class="bubble">
+      ${m.content.replace(/\n/g, '<br>')}
+      ${m.citations?.length ? `
+        <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
+          <strong style="font-size: 12px; color: #6b7280;">Citations:</strong>
+          ${m.citations.map(c => `
+            <div class="citation">
+              <div class="citation-title">[${c.number}] ${c.heading}</div>
+              <div class="citation-text">${c.excerpt}</div>
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+    </div>
+    <div class="time">${new Date(m.timestamp).toLocaleString()}</div>
+  </div>
+  `).join('')}
+</body>
+</html>`;
+      const blob = new Blob([html], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `fountain-chat-${new Date().toISOString().split("T")[0]}.html`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } else {
+      // Export as plain text
+      const content = messages
+        .map((m) => {
+          const role = m.role === "user" ? "You" : "Assistant";
+          const time = new Date(m.timestamp).toLocaleString();
+          let text = `[${time}] ${role}:\n${m.content}`;
+          if (m.citations?.length) {
+            text += `\n\nCitations:\n${m.citations.map(c => `[${c.number}] ${c.heading}: ${c.excerpt}`).join('\n')}`;
+          }
+          return text;
+        })
+        .join("\n\n---\n\n");
+
+      const blob = new Blob([content], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `fountain-chat-${new Date().toISOString().split("T")[0]}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  const handleCopyAll = async () => {
     const content = messages
       .map((m) => {
         const role = m.role === "user" ? "You" : "Assistant";
-        const time = new Date(m.timestamp).toLocaleString();
-        return `[${time}] ${role}:\n${m.content}\n`;
+        return `${role}: ${m.content}`;
       })
-      .join("\n---\n\n");
-
-    const blob = new Blob([content], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `fountain-chat-${new Date().toISOString().split("T")[0]}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+      .join("\n\n");
+    await navigator.clipboard.writeText(content);
+    setCopied("all");
+    setTimeout(() => setCopied(null), 2000);
   };
 
   const handleExampleClick = (question: string) => {
@@ -435,12 +514,38 @@ export default function ChatPage() {
               {showContext ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               {showContext ? "Hide" : "Show"} Context
             </Button>
+            <RestartTourButton />
             {messages.length > 0 && (
               <>
-                <Button variant="ghost" size="sm" onClick={handleExport} className="gap-2">
-                  <Download className="h-4 w-4" />
-                  Export
-                </Button>
+                <div className="relative group">
+                  <Button variant="ghost" size="sm" className="gap-2">
+                    <Download className="h-4 w-4" />
+                    Export
+                  </Button>
+                  <div className="absolute right-0 top-full mt-1 bg-card border border-border rounded-lg shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-20 min-w-[140px]">
+                    <button 
+                      onClick={() => handleExport("txt")} 
+                      className="w-full px-3 py-2 text-sm text-left hover:bg-muted flex items-center gap-2"
+                    >
+                      <FileText className="h-4 w-4" />
+                      Text (.txt)
+                    </button>
+                    <button 
+                      onClick={() => handleExport("html")} 
+                      className="w-full px-3 py-2 text-sm text-left hover:bg-muted flex items-center gap-2"
+                    >
+                      <FileDown className="h-4 w-4" />
+                      HTML (for PDF)
+                    </button>
+                    <button 
+                      onClick={handleCopyAll} 
+                      className="w-full px-3 py-2 text-sm text-left hover:bg-muted flex items-center gap-2"
+                    >
+                      <Copy className="h-4 w-4" />
+                      {copied === "all" ? "Copied!" : "Copy All"}
+                    </button>
+                  </div>
+                </div>
                 <Button variant="ghost" size="sm" onClick={() => setMessages([])} className="gap-2">
                   <RotateCcw className="h-4 w-4" />
                   Clear
@@ -480,43 +585,22 @@ export default function ChatPage() {
         {/* Messages */}
         <div className="space-y-6">
           {messages.length === 0 && (
-            <div className="text-center py-12 animate-fade-in">
-              <div className="relative inline-flex items-center justify-center w-20 h-20 mb-6">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 rounded-full blur-xl opacity-40 animate-pulse-soft" />
-                <div className="relative w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
-                  <MessageSquare className="h-10 w-10 text-white" />
+            <div className="space-y-8 animate-fade-in">
+              <div className="text-center py-8">
+                <div className="relative inline-flex items-center justify-center w-20 h-20 mb-6">
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 rounded-full blur-xl opacity-40 animate-pulse-soft" />
+                  <div className="relative w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
+                    <MessageSquare className="h-10 w-10 text-white" />
+                  </div>
                 </div>
-              </div>
-              <p className="text-foreground text-xl font-semibold gradient-text">Ask a question about Fountain workflows</p>
-              <p className="text-muted-foreground text-sm mt-2 mb-8">
-                Your question will be answered using only the official documentation
-              </p>
-              
-              {/* Example Questions */}
-              <div className="max-w-lg mx-auto">
-                <p className="text-xs text-muted-foreground uppercase tracking-wide mb-4 flex items-center justify-center gap-2">
-                  <Sparkles className="h-3 w-3 icon-purple" />
-                  Try asking
+                <p className="text-foreground text-xl font-semibold gradient-text">Ask a question about Fountain workflows</p>
+                <p className="text-muted-foreground text-sm mt-2">
+                  Your question will be answered using only the official documentation
                 </p>
-                <div className="flex flex-wrap justify-center gap-3">
-                  {EXAMPLE_QUESTIONS.slice(0, 3).map((q, i) => {
-                    const colors = [
-                      "from-purple-500/10 to-pink-500/10 hover:from-purple-500/20 hover:to-pink-500/20 border-purple-500/20 hover:border-purple-500/40",
-                      "from-cyan-500/10 to-green-500/10 hover:from-cyan-500/20 hover:to-green-500/20 border-cyan-500/20 hover:border-cyan-500/40",
-                      "from-orange-500/10 to-yellow-500/10 hover:from-orange-500/20 hover:to-yellow-500/20 border-orange-500/20 hover:border-orange-500/40"
-                    ];
-                    return (
-                      <button
-                        key={i}
-                        onClick={() => handleExampleClick(q)}
-                        className={`px-4 py-2.5 text-sm bg-gradient-to-r ${colors[i]} text-foreground rounded-full border transition-all hover:scale-105 hover:shadow-lg`}
-                      >
-                        {q}
-                      </button>
-                    );
-                  })}
-                </div>
               </div>
+              
+              {/* Quick FAQs */}
+              <QuickFAQs onAskQuestion={handleExampleClick} collapsed={false} />
             </div>
           )}
 
@@ -676,7 +760,7 @@ export default function ChatPage() {
                   ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask a question about workflows... (⌘K to focus)"
+                  placeholder="Ask a question about workflows... (⌘K for commands)"
                   className="relative flex-1 min-h-[50px] max-h-[120px] resize-none bg-background rounded-xl border-2 focus:border-purple-500/50"
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
@@ -687,6 +771,12 @@ export default function ChatPage() {
                   disabled={isLoading}
                 />
               </div>
+              <VoiceInput 
+                onTranscript={(text) => {
+                  setInput(prev => prev ? `${prev} ${text}` : text);
+                }}
+                disabled={isLoading}
+              />
               <Button 
                 type="submit" 
                 disabled={!input.trim() || isLoading} 
@@ -698,9 +788,9 @@ export default function ChatPage() {
             <p className="text-xs text-muted-foreground mt-2 flex items-center justify-center gap-2">
               <span className="px-2 py-0.5 rounded badge-purple text-xs">Enter</span> to send
               <span className="text-muted-foreground/50">•</span>
-              <span className="px-2 py-0.5 rounded badge-cyan text-xs">⌘K</span> to focus
+              <span className="px-2 py-0.5 rounded badge-cyan text-xs">⌘K</span> commands
               <span className="text-muted-foreground/50">•</span>
-              <span className="px-2 py-0.5 rounded badge-pink text-xs">Esc</span> to clear
+              <span className="px-2 py-0.5 rounded badge-pink text-xs">🎤</span> voice
             </p>
           </form>
         </div>
@@ -708,6 +798,31 @@ export default function ChatPage() {
 
       {/* Feedback Button */}
       <FeedbackButton />
+      
+      {/* Command Palette */}
+      <CommandPalette
+        onExport={() => handleExport("txt")}
+        onClear={() => setMessages([])}
+        onToggleBookmarks={() => setShowBookmarks(prev => !prev)}
+        onFocusInput={() => inputRef.current?.focus()}
+        exampleQuestions={EXAMPLE_QUESTIONS}
+        onAskQuestion={handleExampleClick}
+      />
+      
+      {/* Onboarding Tour */}
+      <OnboardingTour />
+      
+      {/* Scroll to Top */}
+      <ScrollToTop />
+      
+      {/* Bookmarks Sidebar */}
+      <BookmarksSidebar
+        isOpen={showBookmarks}
+        onClose={() => setShowBookmarks(false)}
+        bookmarks={bookmarks}
+        onRemove={removeBookmark}
+        onSelect={(q) => handleExampleClick(q)}
+      />
     </div>
   );
 }
