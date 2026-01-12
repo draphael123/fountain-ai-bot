@@ -29,7 +29,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
   ];
 
   // Google Sheets endpoint
-  const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbxVLTLifrPWfQ2ve549TzbfD-vRLP-wTU4DvR6CYq0r6RO2n5532g30UL-sNBIqFfIh/exec";
+  const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbxsHJEi2aurIYL4iCRa6zlDp8CStam5FfLSIzKTyNVZbkKyQ1jTT3nEKbLBiZvAjRyu/exec";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
