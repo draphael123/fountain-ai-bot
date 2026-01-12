@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, FileText, Shield, MessageSquare, AlertTriangle, Sparkles, Chrome, Download, ExternalLink, Zap, Star, Heart, HelpCircle } from "lucide-react";
+import { ArrowRight, FileText, Shield, MessageSquare, AlertTriangle, Sparkles, Chrome, Download, ExternalLink, Zap, Star, Heart, HelpCircle, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -65,16 +65,16 @@ export default function HomePage() {
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
+              <Link href="/about">
+                <Button variant="outline" size="lg" className="gap-2 border-2 hover:bg-blue-500/10 hover:border-blue-500/50 hover:text-blue-600 dark:hover:text-blue-400 transition-all">
+                  <Info className="h-4 w-4" />
+                  About
+                </Button>
+              </Link>
               <Link href="/faq">
                 <Button variant="outline" size="lg" className="gap-2 border-2 hover:bg-amber-500/10 hover:border-amber-500/50 hover:text-amber-600 dark:hover:text-amber-400 transition-all">
                   <HelpCircle className="h-4 w-4" />
                   FAQ
-                </Button>
-              </Link>
-              <Link href="/sources">
-                <Button variant="outline" size="lg" className="gap-2 border-2 hover:bg-cyan-500/10 hover:border-cyan-500/50 hover:text-cyan-600 dark:hover:text-cyan-400 transition-all">
-                  <FileText className="h-4 w-4" />
-                  View Document Sources
                 </Button>
               </Link>
             </div>
