@@ -52,3 +52,4 @@ export function PatientResponseToggle({ enabled, onToggle }: PatientResponseTogg
   );
 }
 
+

@@ -204,3 +204,4 @@ export async function getPlainText(filePath: string): Promise<string> {
   return result.value;
 }
 
+

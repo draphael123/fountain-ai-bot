@@ -34,3 +34,4 @@ export function WordCount({ text }: { text: string }) {
   );
 }
 
+

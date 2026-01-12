@@ -28,6 +28,9 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
     { value: "other", label: "Other", emoji: "📝" },
   ];
 
+  // Google Sheets endpoint
+  const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbxVLTLifrPWfQ2ve549TzbfD-vRLP-wTU4DvR6CYq0r6RO2n5532g30UL-sNBIqFfIh/exec";
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -40,24 +43,25 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
     setError(null);
 
     try {
-      // Store feedback locally (could be extended to send to a backend)
       const feedback = {
         type: feedbackType,
         message: message.trim(),
-        email: email.trim() || undefined,
-        timestamp: new Date().toISOString(),
+        email: email.trim() || "",
         source: "website",
         userAgent: navigator.userAgent,
       };
 
-      // Store in localStorage for now (can be sent to backend later)
-      const existingFeedback = JSON.parse(localStorage.getItem("fountain-feedback") || "[]");
-      existingFeedback.push(feedback);
-      localStorage.setItem("fountain-feedback", JSON.stringify(existingFeedback));
+      // Send to Google Sheets
+      const response = await fetch(GOOGLE_SHEETS_URL, {
+        method: "POST",
+        mode: "no-cors", // Required for Google Apps Script
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(feedback),
+      });
 
-      // Simulate submission delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
+      // With no-cors mode, we can't read the response, but if no error was thrown, assume success
       setIsSubmitted(true);
       
       // Reset after showing success
@@ -69,6 +73,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
         onClose();
       }, 2000);
     } catch (err) {
+      console.error("Feedback submission error:", err);
       setError("Failed to submit feedback. Please try again.");
     } finally {
       setIsSubmitting(false);

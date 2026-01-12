@@ -896,18 +896,25 @@ async function submitFeedback() {
   const feedback = {
     type: selectedFeedbackType,
     message,
-    email: email || undefined,
-    timestamp: new Date().toISOString(),
+    email: email || "",
     source: "extension",
+    userAgent: navigator.userAgent,
   };
   
-  // Store locally
+  // Send to Google Sheets
+  const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbxVLTLifrPWfQ2ve549TzbfD-vRLP-wTU4DvR6CYq0r6RO2n5532g30UL-sNBIqFfIh/exec";
+  
   try {
-    const existing = JSON.parse(localStorage.getItem("fountain-feedback") || "[]");
-    existing.push(feedback);
-    localStorage.setItem("fountain-feedback", JSON.stringify(existing));
+    await fetch(GOOGLE_SHEETS_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(feedback),
+    });
   } catch (e) {
-    console.error("Failed to save feedback:", e);
+    console.error("Failed to send feedback:", e);
   }
   
   // Show success

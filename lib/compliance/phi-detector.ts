@@ -91,3 +91,4 @@ export function getPHIWarning(text: string): string | null {
   return `Warning: Your message may contain ${types.join(", ")}. Please ensure you are not sharing Protected Health Information.`;
 }
 
+
