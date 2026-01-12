@@ -168,18 +168,18 @@ export default function FAQPage() {
       
       {/* Header */}
       <header className="bg-card/80 backdrop-blur-lg border-b border-border sticky top-0 z-10">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-pink-500/5 to-cyan-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-blue-600/5 to-blue-400/5" />
         <div className="relative max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href="/">
-                <Button variant="ghost" size="sm" className="gap-2 hover:bg-purple-500/10 hover:text-purple-600">
+                <Button variant="ghost" size="sm" className="gap-2 hover:bg-blue-500/10 hover:text-blue-600">
                   <ArrowLeft className="h-4 w-4" />
                   Back
                 </Button>
               </Link>
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg blur opacity-30" />
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-400 rounded-lg blur opacity-30" />
                 <Image 
                   src="/logo.png" 
                   alt="Logo" 
@@ -196,7 +196,7 @@ export default function FAQPage() {
             <div className="flex items-center gap-2">
               <ThemeToggle />
               <Link href="/chat">
-                <Button size="sm" className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600">
+                <Button size="sm" className="gap-2 bg-gradient-to-r from-blue-700 to-blue-500">
                   <MessageSquare className="h-4 w-4" />
                   Ask a Question
                 </Button>
@@ -218,7 +218,7 @@ export default function FAQPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search FAQs..."
-            className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-purple-500/50 transition-colors"
+            className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-blue-500/50 transition-colors"
           />
         </div>
 
@@ -231,7 +231,7 @@ export default function FAQPage() {
               className={cn(
                 "flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all",
                 selectedCategory === cat.id
-                  ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg"
+                  ? "bg-gradient-to-r from-blue-700 to-blue-500 text-white shadow-lg"
                   : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
               )}
             >
@@ -273,15 +273,15 @@ export default function FAQPage() {
             filteredFAQs.map((faq, index) => (
               <div
                 key={index}
-                className="bg-card border border-border rounded-xl overflow-hidden transition-all hover:border-purple-500/30"
+                className="bg-card border border-border rounded-xl overflow-hidden transition-all hover:border-blue-500/30"
               >
                 <button
                   onClick={() => toggleItem(index)}
                   className="w-full flex items-center justify-between p-4 text-left"
                 >
                   <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-gradient-to-r from-purple-500/10 to-pink-500/10 mt-0.5">
-                      <HelpCircle className="h-4 w-4 text-purple-500" />
+                    <div className="p-2 rounded-lg bg-gradient-to-r from-blue-500/10 to-blue-600/10 mt-0.5">
+                      <HelpCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                     </div>
                     <span className="font-medium text-foreground">{faq.question}</span>
                   </div>
@@ -313,13 +313,13 @@ export default function FAQPage() {
         </div>
 
         {/* Still have questions? */}
-        <div className="mt-12 text-center p-8 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-cyan-500/10 rounded-2xl border border-purple-500/20">
+        <div className="mt-12 text-center p-8 bg-gradient-to-r from-blue-500/10 via-blue-600/10 to-blue-400/10 rounded-2xl border border-blue-500/20">
           <h2 className="text-xl font-semibold text-foreground mb-2">Still have questions?</h2>
           <p className="text-muted-foreground mb-4">
             Ask the AI assistant for instant answers about Fountain workflows
           </p>
           <Link href="/chat">
-            <Button className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+            <Button className="gap-2 bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-800 hover:to-blue-600">
               <MessageSquare className="h-4 w-4" />
               Ask a Question
             </Button>

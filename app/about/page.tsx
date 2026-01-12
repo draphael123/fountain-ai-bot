@@ -18,18 +18,18 @@ export default function AboutPage() {
       
       {/* Header */}
       <header className="bg-card/80 backdrop-blur-lg border-b border-border sticky top-0 z-10">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-pink-500/5 to-cyan-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-blue-600/5 to-blue-400/5" />
         <div className="relative max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href="/">
-                <Button variant="ghost" size="sm" className="gap-2 hover:bg-purple-500/10 hover:text-purple-600">
+                <Button variant="ghost" size="sm" className="gap-2 hover:bg-blue-500/10 hover:text-blue-600">
                   <ArrowLeft className="h-4 w-4" />
                   Back
                 </Button>
               </Link>
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg blur opacity-30" />
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-400 rounded-lg blur opacity-30" />
                 <Image 
                   src="/logo.png" 
                   alt="Logo" 
@@ -53,7 +53,7 @@ export default function AboutPage() {
         
         {/* Hero Section */}
         <section className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 mb-6 shadow-lg shadow-purple-500/25">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-700 to-blue-500 mb-6 shadow-lg shadow-blue-500/25">
             <MessageSquare className="h-10 w-10 text-white" />
           </div>
           <h1 className="text-4xl font-bold text-foreground mb-4">
@@ -68,12 +68,12 @@ export default function AboutPage() {
         {/* Purpose Section */}
         <section className="mb-16">
           <div className="bg-card border border-border rounded-2xl p-8 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-3xl" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-full blur-3xl" />
             
             <div className="relative">
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 rounded-lg bg-purple-500/10">
-                  <Target className="h-6 w-6 text-purple-500" />
+                <div className="p-2 rounded-lg bg-blue-500/10">
+                  <Target className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                 </div>
                 <h2 className="text-2xl font-bold text-foreground">Our Purpose</h2>
               </div>
@@ -124,7 +124,7 @@ export default function AboutPage() {
           
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center p-6 bg-card border border-border rounded-xl">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-lg mb-4">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-blue-700 to-blue-500 text-white font-bold text-lg mb-4">
                 1
               </div>
               <h3 className="font-semibold text-foreground mb-2">Ask a Question</h3>
@@ -134,7 +134,7 @@ export default function AboutPage() {
             </div>
             
             <div className="text-center p-6 bg-card border border-border rounded-xl">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 text-white font-bold text-lg mb-4">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-blue-600 to-blue-400 text-white font-bold text-lg mb-4">
                 2
               </div>
               <h3 className="font-semibold text-foreground mb-2">AI Searches Docs</h3>
@@ -170,7 +170,7 @@ export default function AboutPage() {
               icon={<Heart className="h-5 w-5" />}
               title="Patient Response Mode"
               description="Get answers in simple, patient-friendly language that's easy to understand and share."
-              color="from-pink-500 to-rose-500"
+              color="from-blue-500 to-blue-400"
             />
             <FeatureCard 
               icon={<FileText className="h-5 w-5" />}
@@ -188,7 +188,7 @@ export default function AboutPage() {
               icon={<Search className="h-5 w-5" />}
               title="Voice Input"
               description="Speak your question instead of typing. Perfect for quick lookups."
-              color="from-purple-500 to-violet-500"
+              color="from-blue-600 to-blue-500"
             />
             <FeatureCard 
               icon={<Chrome className="h-5 w-5" />}
@@ -201,10 +201,10 @@ export default function AboutPage() {
 
         {/* Who Is This For */}
         <section className="mb-16">
-          <div className="bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-cyan-500/10 border border-purple-500/20 rounded-2xl p-8">
+          <div className="bg-gradient-to-r from-blue-500/10 via-blue-600/10 to-blue-400/10 border border-blue-500/20 rounded-2xl p-8">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 rounded-lg bg-purple-500/20">
-                <Users className="h-6 w-6 text-purple-500" />
+              <div className="p-2 rounded-lg bg-blue-500/20">
+                <Users className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               </div>
               <h2 className="text-2xl font-bold text-foreground">Who Is This For?</h2>
             </div>
@@ -215,11 +215,11 @@ export default function AboutPage() {
             
             <div className="grid md:grid-cols-2 gap-4">
               <div className="flex items-center gap-3 p-3 bg-card/50 rounded-lg">
-                <div className="w-2 h-2 rounded-full bg-purple-500" />
+                <div className="w-2 h-2 rounded-full bg-blue-600" />
                 <span className="text-foreground">Patient care coordinators</span>
               </div>
               <div className="flex items-center gap-3 p-3 bg-card/50 rounded-lg">
-                <div className="w-2 h-2 rounded-full bg-pink-500" />
+                <div className="w-2 h-2 rounded-full bg-blue-500" />
                 <span className="text-foreground">Customer support representatives</span>
               </div>
               <div className="flex items-center gap-3 p-3 bg-card/50 rounded-lg">
@@ -301,7 +301,7 @@ export default function AboutPage() {
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link href="/chat">
-              <Button size="lg" className="gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+              <Button size="lg" className="gap-2 bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-800 hover:to-blue-600">
                 <Sparkles className="h-4 w-4" />
                 Start Asking Questions
                 <ArrowRight className="h-4 w-4" />
@@ -331,7 +331,7 @@ function FeatureCard({
   color: string;
 }) {
   return (
-    <div className="flex items-start gap-4 p-4 bg-card border border-border rounded-xl hover:border-purple-500/30 transition-colors">
+    <div className="flex items-start gap-4 p-4 bg-card border border-border rounded-xl hover:border-blue-500/30 transition-colors">
       <div className={`p-2.5 rounded-lg bg-gradient-to-r ${color} text-white`}>
         {icon}
       </div>

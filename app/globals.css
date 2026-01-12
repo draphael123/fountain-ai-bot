@@ -4,64 +4,64 @@
 
 @layer base {
   :root {
-    --background: 240 20% 98%;
-    --foreground: 240 20% 10%;
+    --background: 210 40% 98%;
+    --foreground: 220 30% 15%;
     --card: 0 0% 100%;
-    --card-foreground: 240 20% 10%;
-    --primary: 262 83% 58%;
+    --card-foreground: 220 30% 15%;
+    --primary: 217 91% 40%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 10% 94%;
-    --secondary-foreground: 240 20% 20%;
-    --muted: 240 10% 96%;
-    --muted-foreground: 240 10% 40%;
-    --accent: 330 81% 60%;
+    --secondary: 210 30% 94%;
+    --secondary-foreground: 220 25% 25%;
+    --muted: 210 25% 96%;
+    --muted-foreground: 215 20% 45%;
+    --accent: 210 100% 50%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --border: 240 13% 91%;
-    --input: 240 13% 91%;
-    --ring: 262 83% 58%;
+    --border: 214 30% 90%;
+    --input: 214 30% 90%;
+    --ring: 217 91% 40%;
     --radius: 0.75rem;
     --success: 142 76% 36%;
     --warning: 38 92% 50%;
     
-    /* Colorful accent palette */
-    --purple: 262 83% 58%;
-    --pink: 330 81% 60%;
-    --cyan: 192 91% 50%;
-    --orange: 25 95% 53%;
-    --green: 142 70% 45%;
-    --yellow: 48 96% 53%;
+    /* Professional blue palette */
+    --navy: 217 91% 25%;
+    --blue: 217 91% 40%;
+    --blue-light: 210 100% 50%;
+    --blue-pale: 210 100% 95%;
+    --slate: 215 20% 45%;
+    --steel: 210 15% 60%;
   }
 
   .dark {
-    --background: 240 20% 4%;
-    --foreground: 240 15% 95%;
-    --card: 240 20% 7%;
-    --card-foreground: 240 15% 95%;
-    --primary: 262 83% 65%;
+    --background: 220 30% 6%;
+    --foreground: 210 40% 96%;
+    --card: 220 25% 10%;
+    --card-foreground: 210 40% 96%;
+    --primary: 210 100% 55%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 20% 13%;
-    --secondary-foreground: 240 15% 95%;
-    --muted: 240 15% 13%;
-    --muted-foreground: 240 10% 65%;
-    --accent: 330 81% 65%;
+    --secondary: 220 25% 15%;
+    --secondary-foreground: 210 40% 96%;
+    --muted: 220 20% 14%;
+    --muted-foreground: 215 20% 60%;
+    --accent: 210 100% 60%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 63% 40%;
     --destructive-foreground: 0 0% 100%;
-    --border: 240 15% 18%;
-    --input: 240 15% 18%;
-    --ring: 262 83% 65%;
+    --border: 220 20% 20%;
+    --input: 220 20% 20%;
+    --ring: 210 100% 55%;
     --success: 142 76% 42%;
     --warning: 38 92% 55%;
     
-    /* Colorful accent palette */
-    --purple: 262 83% 65%;
-    --pink: 330 81% 65%;
-    --cyan: 192 91% 55%;
-    --orange: 25 95% 58%;
-    --green: 142 70% 50%;
-    --yellow: 48 96% 58%;
+    /* Professional blue palette - dark mode */
+    --navy: 217 91% 35%;
+    --blue: 210 100% 55%;
+    --blue-light: 210 100% 65%;
+    --blue-pale: 220 50% 20%;
+    --slate: 215 20% 60%;
+    --steel: 210 15% 50%;
   }
 }
 
@@ -229,16 +229,16 @@ html {
   -webkit-backdrop-filter: blur(8px);
 }
 
-/* Gradient text */
+/* Gradient text - now blue-focused */
 .gradient-text {
-  background: linear-gradient(135deg, hsl(var(--purple)), hsl(var(--pink)), hsl(var(--cyan)));
+  background: linear-gradient(135deg, hsl(var(--navy)), hsl(var(--blue)), hsl(var(--blue-light)));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .gradient-text-alt {
-  background: linear-gradient(135deg, hsl(var(--cyan)), hsl(var(--green)));
+  background: linear-gradient(135deg, hsl(var(--blue)), hsl(var(--blue-light)));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -249,30 +249,25 @@ html {
   @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
 }
 
-/* Colorful backgrounds */
-.bg-gradient-purple-pink {
-  background: linear-gradient(135deg, hsl(var(--purple) / 0.1), hsl(var(--pink) / 0.1));
+/* Blue-focused backgrounds */
+.bg-gradient-blue {
+  background: linear-gradient(135deg, hsl(var(--navy) / 0.1), hsl(var(--blue) / 0.1));
 }
 
-.bg-gradient-cyan-green {
-  background: linear-gradient(135deg, hsl(var(--cyan) / 0.1), hsl(var(--green) / 0.1));
-}
-
-.bg-gradient-orange-yellow {
-  background: linear-gradient(135deg, hsl(var(--orange) / 0.1), hsl(var(--yellow) / 0.1));
+.bg-gradient-light {
+  background: linear-gradient(135deg, hsl(var(--blue-pale)), hsl(var(--background)));
 }
 
 .bg-gradient-mesh {
   background: 
-    radial-gradient(at 40% 20%, hsl(var(--purple) / 0.15) 0px, transparent 50%),
-    radial-gradient(at 80% 0%, hsl(var(--pink) / 0.15) 0px, transparent 50%),
-    radial-gradient(at 0% 50%, hsl(var(--cyan) / 0.1) 0px, transparent 50%),
-    radial-gradient(at 80% 50%, hsl(var(--orange) / 0.08) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, hsl(var(--green) / 0.1) 0px, transparent 50%),
-    radial-gradient(at 80% 100%, hsl(var(--yellow) / 0.08) 0px, transparent 50%);
+    radial-gradient(at 40% 20%, hsl(var(--blue) / 0.08) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, hsl(var(--navy) / 0.06) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, hsl(var(--blue-light) / 0.05) 0px, transparent 50%),
+    radial-gradient(at 80% 50%, hsl(var(--blue) / 0.04) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, hsl(var(--navy) / 0.05) 0px, transparent 50%);
 }
 
-/* Animated gradient border */
+/* Subtle animated border */
 @keyframes gradient-rotate {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -290,7 +285,7 @@ html {
   inset: 0;
   padding: 2px;
   border-radius: inherit;
-  background: linear-gradient(90deg, hsl(var(--purple)), hsl(var(--pink)), hsl(var(--cyan)), hsl(var(--purple)));
+  background: linear-gradient(90deg, hsl(var(--navy)), hsl(var(--blue)), hsl(var(--blue-light)), hsl(var(--navy)));
   background-size: 300% 300%;
   animation: gradient-rotate 3s linear infinite;
   -webkit-mask: 
@@ -301,29 +296,38 @@ html {
   pointer-events: none;
 }
 
-/* Colorful hover states */
-.hover-purple:hover { background: hsl(var(--purple) / 0.1); }
-.hover-pink:hover { background: hsl(var(--pink) / 0.1); }
-.hover-cyan:hover { background: hsl(var(--cyan) / 0.1); }
-.hover-orange:hover { background: hsl(var(--orange) / 0.1); }
-.hover-green:hover { background: hsl(var(--green) / 0.1); }
+/* Blue-focused hover states */
+.hover-blue:hover { background: hsl(var(--blue) / 0.1); }
+.hover-navy:hover { background: hsl(var(--navy) / 0.1); }
 
-/* Colorful badges */
-.badge-purple { background: hsl(var(--purple) / 0.15); color: hsl(var(--purple)); }
-.badge-pink { background: hsl(var(--pink) / 0.15); color: hsl(var(--pink)); }
-.badge-cyan { background: hsl(var(--cyan) / 0.15); color: hsl(var(--cyan)); }
-.badge-orange { background: hsl(var(--orange) / 0.15); color: hsl(var(--orange)); }
-.badge-green { background: hsl(var(--green) / 0.15); color: hsl(var(--green)); }
-.badge-yellow { background: hsl(var(--yellow) / 0.15); color: hsl(var(--yellow)); }
+/* Professional badges */
+.badge-blue { background: hsl(var(--blue) / 0.12); color: hsl(var(--blue)); }
+.badge-navy { background: hsl(var(--navy) / 0.12); color: hsl(var(--navy)); }
+.badge-success { background: hsl(var(--success) / 0.12); color: hsl(var(--success)); }
+.badge-warning { background: hsl(var(--warning) / 0.12); color: hsl(var(--warning)); }
+.badge-light { background: hsl(var(--blue-pale)); color: hsl(var(--navy)); }
 
-/* Colorful icons */
-.icon-purple { color: hsl(var(--purple)); }
-.icon-pink { color: hsl(var(--pink)); }
-.icon-cyan { color: hsl(var(--cyan)); }
-.icon-orange { color: hsl(var(--orange)); }
-.icon-green { color: hsl(var(--green)); }
+/* Legacy badge names for compatibility */
+.badge-purple { background: hsl(var(--blue) / 0.12); color: hsl(var(--blue)); }
+.badge-pink { background: hsl(var(--navy) / 0.12); color: hsl(var(--navy)); }
+.badge-cyan { background: hsl(var(--blue-light) / 0.12); color: hsl(var(--blue-light)); }
+.badge-orange { background: hsl(var(--warning) / 0.12); color: hsl(var(--warning)); }
+.badge-green { background: hsl(var(--success) / 0.12); color: hsl(var(--success)); }
+.badge-yellow { background: hsl(var(--warning) / 0.12); color: hsl(var(--warning)); }
 
-/* Glowing button effect */
+/* Professional icons */
+.icon-blue { color: hsl(var(--blue)); }
+.icon-navy { color: hsl(var(--navy)); }
+.icon-light { color: hsl(var(--blue-light)); }
+
+/* Legacy icon names */
+.icon-purple { color: hsl(var(--blue)); }
+.icon-pink { color: hsl(var(--navy)); }
+.icon-cyan { color: hsl(var(--blue-light)); }
+.icon-orange { color: hsl(var(--warning)); }
+.icon-green { color: hsl(var(--success)); }
+
+/* Clean button glow */
 .btn-glow {
   position: relative;
   overflow: hidden;
@@ -335,10 +339,10 @@ html {
   inset: -50%;
   background: conic-gradient(
     from 0deg,
-    hsl(var(--purple)),
-    hsl(var(--pink)),
-    hsl(var(--cyan)),
-    hsl(var(--purple))
+    hsl(var(--navy)),
+    hsl(var(--blue)),
+    hsl(var(--blue-light)),
+    hsl(var(--navy))
   );
   animation: gradient-rotate 2s linear infinite;
   opacity: 0;
@@ -346,14 +350,14 @@ html {
 }
 
 .btn-glow:hover::before {
-  opacity: 0.5;
+  opacity: 0.3;
 }
 
 .btn-glow > * {
   position: relative;
 }
 
-/* Rainbow underline */
+/* Subtle underline */
 .rainbow-underline {
   position: relative;
 }
@@ -365,7 +369,7 @@ html {
   bottom: -4px;
   width: 100%;
   height: 3px;
-  background: linear-gradient(90deg, hsl(var(--purple)), hsl(var(--pink)), hsl(var(--cyan)), hsl(var(--green)));
+  background: linear-gradient(90deg, hsl(var(--navy)), hsl(var(--blue)), hsl(var(--blue-light)));
   border-radius: 2px;
 }
 
@@ -389,19 +393,19 @@ html {
   animation-delay: 1s;
 }
 
-/* Blob shapes for background */
+/* Blob shapes for background - blue tones */
 .blob {
   border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
 }
 
 .blob-purple {
-  background: linear-gradient(135deg, hsl(var(--purple) / 0.3), hsl(var(--pink) / 0.2));
+  background: linear-gradient(135deg, hsl(var(--navy) / 0.2), hsl(var(--blue) / 0.15));
 }
 
 .blob-cyan {
-  background: linear-gradient(135deg, hsl(var(--cyan) / 0.3), hsl(var(--green) / 0.2));
+  background: linear-gradient(135deg, hsl(var(--blue) / 0.2), hsl(var(--blue-light) / 0.15));
 }
 
 .blob-orange {
-  background: linear-gradient(135deg, hsl(var(--orange) / 0.3), hsl(var(--yellow) / 0.2));
+  background: linear-gradient(135deg, hsl(var(--blue-light) / 0.15), hsl(var(--blue) / 0.1));
 }

@@ -451,18 +451,18 @@ export default function ChatPage() {
       
       {/* Header */}
       <header className="bg-card/80 backdrop-blur-lg border-b border-border sticky top-0 z-10">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-pink-500/5 to-cyan-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-blue-600/5 to-blue-400/5" />
         <div className="relative max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href="/">
-                <Button variant="ghost" size="sm" className="gap-2 hover:bg-purple-500/10 hover:text-purple-600 dark:hover:text-purple-400">
+                <Button variant="ghost" size="sm" className="gap-2 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400">
                   <ArrowLeft className="h-4 w-4" />
                   Back
                 </Button>
               </Link>
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg blur opacity-30" />
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-400 rounded-lg blur opacity-30" />
                 <Image 
                   src="/logo.png" 
                   alt="Logo" 
@@ -588,8 +588,8 @@ export default function ChatPage() {
             <div className="space-y-8 animate-fade-in">
               <div className="text-center py-8">
                 <div className="relative inline-flex items-center justify-center w-20 h-20 mb-6">
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 rounded-full blur-xl opacity-40 animate-pulse-soft" />
-                  <div className="relative w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 rounded-full blur-xl opacity-30 animate-pulse-soft" />
+                  <div className="relative w-full h-full bg-gradient-to-br from-blue-700 to-blue-500 rounded-full flex items-center justify-center shadow-lg">
                     <MessageSquare className="h-10 w-10 text-white" />
                   </div>
                 </div>
@@ -614,7 +614,7 @@ export default function ChatPage() {
             >
               {message.role === "user" ? (
                 <div className="max-w-[80%]">
-                  <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-3 rounded-2xl rounded-br-md shadow-lg shadow-purple-500/20">
+                  <div className="bg-gradient-to-r from-blue-700 to-blue-500 text-white px-4 py-3 rounded-2xl rounded-br-md shadow-lg shadow-blue-500/20">
                     <p className="whitespace-pre-wrap">{message.content}</p>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1 text-right">
@@ -733,7 +733,7 @@ export default function ChatPage() {
 
       {/* Fixed Input at Bottom */}
       <div className="fixed bottom-0 left-0 right-0 bg-card/80 backdrop-blur-lg border-t border-border p-4 shadow-2xl">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-pink-500/5 to-cyan-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-blue-600/5 to-blue-400/5" />
         <div className="relative max-w-4xl mx-auto">
           {/* Warnings */}
           {phiWarning && (
@@ -755,13 +755,13 @@ export default function ChatPage() {
           <form onSubmit={handleSubmit}>
             <div className="flex gap-3">
               <div className="flex-1 relative">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 rounded-xl opacity-0 focus-within:opacity-30 blur transition-opacity" />
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 rounded-xl opacity-0 focus-within:opacity-20 blur transition-opacity" />
                 <Textarea
                   ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Ask a question about workflows... (⌘K for commands)"
-                  className="relative flex-1 min-h-[50px] max-h-[120px] resize-none bg-background rounded-xl border-2 focus:border-purple-500/50"
+                  className="relative flex-1 min-h-[50px] max-h-[120px] resize-none bg-background rounded-xl border-2 focus:border-blue-500/50"
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault();
@@ -780,7 +780,7 @@ export default function ChatPage() {
               <Button 
                 type="submit" 
                 disabled={!input.trim() || isLoading} 
-                className="px-6 h-[50px] btn-hover-lift bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg shadow-purple-500/25 rounded-xl"
+                className="px-6 h-[50px] btn-hover-lift bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-800 hover:to-blue-600 shadow-lg shadow-blue-500/25 rounded-xl"
               >
                 {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
               </Button>

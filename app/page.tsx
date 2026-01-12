@@ -31,7 +31,7 @@ export default function HomePage() {
             {/* Logo with glow effect */}
             <div className="flex justify-center mb-4 animate-fade-in-up">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 rounded-2xl blur-xl opacity-40 animate-pulse-soft" />
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 rounded-2xl blur-xl opacity-30 animate-pulse-soft" />
                 <Image 
                   src="/logo.png" 
                   alt="Fountain Workflows Logo" 
@@ -42,8 +42,8 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-full text-sm font-medium animate-fade-in" style={{ animationDelay: "0.1s" }}>
-              <Shield className="h-4 w-4 icon-purple" />
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500/10 to-blue-600/10 border border-blue-500/20 rounded-full text-sm font-medium animate-fade-in" style={{ animationDelay: "0.1s" }}>
+              <Shield className="h-4 w-4 text-blue-600 dark:text-blue-400" />
               <span className="gradient-text font-semibold">Internal Operations Tool</span>
             </div>
             
@@ -59,7 +59,7 @@ export default function HomePage() {
 
             <div className="flex flex-wrap items-center justify-center gap-4 pt-4 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
               <Link href="/chat">
-                <Button size="lg" className="gap-2 btn-hover-lift bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg shadow-purple-500/25">
+                <Button size="lg" className="gap-2 btn-hover-lift bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-800 hover:to-blue-600 shadow-lg shadow-blue-500/25">
                   <Sparkles className="h-4 w-4" />
                   Start Asking Questions
                   <ArrowRight className="h-4 w-4" />
