@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, FileText, Shield, MessageSquare, AlertTriangle, Sparkles, Chrome, Download, ExternalLink, Zap, Star, Heart } from "lucide-react";
+import { ArrowRight, FileText, Shield, MessageSquare, AlertTriangle, Sparkles, Chrome, Download, ExternalLink, Zap, Star, Heart, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -63,6 +63,12 @@ export default function HomePage() {
                   <Sparkles className="h-4 w-4" />
                   Start Asking Questions
                   <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href="/faq">
+                <Button variant="outline" size="lg" className="gap-2 border-2 hover:bg-amber-500/10 hover:border-amber-500/50 hover:text-amber-600 dark:hover:text-amber-400 transition-all">
+                  <HelpCircle className="h-4 w-4" />
+                  FAQ
                 </Button>
               </Link>
               <Link href="/sources">
